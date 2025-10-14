@@ -1,0 +1,65 @@
+====================================================================================================
+MISSING 2025 ATP TOURNAMENTS (UPDATED)
+====================================================================================================
+Generated: 2025-10-14 18:11:00
+====================================================================================================
+
+
+GRAND SLAMS (4 missing)
+----------------------------------------------------------------------------------------------------
+  • Australian Open           Melbourne            Hard            Jan 12-26            [Grand Slam]
+  • French Open               Paris                Clay            May 25 - Jun 8       [Grand Slam]
+  • Wimbledon                 London               Grass           Jun 30 - Jul 13      [Grand Slam]
+  • US Open                   New York             Hard            Aug 25 - Sep 7       [Grand Slam]
+
+MASTERS 1000 (9 missing)
+----------------------------------------------------------------------------------------------------
+  • Indian Wells              California           Hard            Mar 5-16             [Masters 1000]
+  • Miami                     Florida              Hard            Mar 19-30            [Masters 1000]
+  • Monte Carlo               Monaco               Clay            Apr 6-13             [Masters 1000]
+  • Madrid                    Spain                Clay            Apr 24 - May 4       [Masters 1000]
+  • Rome                      Italy                Clay            May 8-18             [Masters 1000]
+  • Canada                    Montreal/Toronto     Hard            Aug 4-10             [Masters 1000]
+  • Cincinnati                Ohio                 Hard            Aug 11-17            [Masters 1000]
+  • Shanghai                  China                Hard            Oct 5-12             [Masters 1000]
+  • Paris                     France               Indoor Hard     Oct 27 - Nov 2       [Masters 1000]
+
+ATP 500 (4 missing)
+----------------------------------------------------------------------------------------------------
+  • Rio de Janeiro            Brazil               Clay            Feb 17-23            [ATP 500]
+  • Washington                USA                  Hard            Jul 28 - Aug 3       [ATP 500]
+  • Basel                     Switzerland          Indoor Hard     Oct 20-26            [ATP 500]
+  • Vienna                    Austria              Indoor Hard     Oct 20-26            [ATP 500]
+
+ATP 250 (15 missing)
+----------------------------------------------------------------------------------------------------
+  • Buenos Aires              Argentina            Clay            Feb 17-23            [ATP 250]
+  • Delray Beach              USA                  Hard            Feb 17-23            [ATP 250]
+  • Estoril                   Portugal             Clay            Apr 28 - May 4       [ATP 250]
+  • Lyon                      France               Clay            May 19-24            [ATP 250]
+  • s-Hertogenbosch           Netherlands          Grass           Jun 16-22            [ATP 250]
+  • Newport                   USA                  Grass           Jul 14-20            [ATP 250]
+  • Umag                      Croatia              Clay            Jul 21-27            [ATP 250]
+  • Atlanta                   USA                  Hard            Jul 28 - Aug 3       [ATP 250]
+  • Kitzbuhel                 Austria              Clay            Jul 28 - Aug 3       [ATP 250]
+  • Zhuhai                    China                Hard            Sep 22-28            [ATP 250]
+  • Antwerp                   Belgium              Indoor Hard     Oct 13-19            [ATP 250]
+  • Stockholm                 Sweden               Indoor Hard     Oct 13-19            [ATP 250]
+  • Almaty                    Kazakhstan           Hard            Oct 13-19            [ATP 250]
+  • Metz                      France               Indoor Hard     Oct 27 - Nov 2       [ATP 250]
+  • Belgrade                  Serbia               Indoor Hard     Oct 27 - Nov 2       [ATP 250]
+
+====================================================================================================
+SUMMARY
+====================================================================================================
+Total ATP tournaments in 2025: 59
+Tournaments we have: 27
+Tournaments missing: 32
+Coverage: 27/59 (45.8%)
+
+PRIORITY:
+  1. Grand Slams (4) - Most important for player ratings
+  2. Masters 1000 (9) - High-level tournaments
+  3. ATP 500 (4) - Including Rio de Janeiro
+  4. ATP 250 (remaining) - Lower priority
+====================================================================================================
