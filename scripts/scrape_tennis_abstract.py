@@ -68,12 +68,14 @@ def get_2025_tournaments():
     return tournaments_2025
 
 
-def scrape_tournament_page(tournament_id):
+def scrape_tournament_page(tournament_id, retry_on_429=True, retry_delay=30):
     """
     Scrape a single tournament page from Tennis Abstract.
     
     Args:
         tournament_id: Tournament identifier (e.g., '2025-Dallas')
+        retry_on_429: Whether to retry if rate limited
+        retry_delay: Seconds to wait before retrying after 429
     
     Returns:
         List of match dictionaries
@@ -83,7 +85,7 @@ def scrape_tournament_page(tournament_id):
     tournament_name = tournament_id.replace('2025-', '').replace('_', '')
     url = f"https://www.tennisabstract.com/cgi-bin/tourney.cgi?t=2025{tournament_name}"
     
-    logger.info(f"Scraping: {tournament_id} from {url}")
+    logger.info(f"Scraping: {tournament_id}")
     
     try:
         response = requests.get(url, timeout=10)
@@ -91,6 +93,19 @@ def scrape_tournament_page(tournament_id):
         if response.status_code == 404:
             logger.warning(f"  ⚠️  Tournament not found: {tournament_id}")
             return []
+        
+        if response.status_code == 429:
+            if retry_on_429:
+                logger.warning(f"  ⚠️  Rate limited. Waiting {retry_delay}s and retrying...")
+                time.sleep(retry_delay)
+                # Retry once
+                response = requests.get(url, timeout=10)
+                if response.status_code == 429:
+                    logger.error(f"  ❌ Still rate limited after retry: {tournament_id}")
+                    return []
+            else:
+                logger.error(f"  ❌ HTTP 429 (rate limited) for {tournament_id}")
+                return []
         
         if response.status_code != 200:
             logger.error(f"  ❌ HTTP {response.status_code} for {tournament_id}")
@@ -254,12 +269,14 @@ def scrape_all_2025_tournaments():
     
     all_matches = []
     
-    for tournament_id in tournaments:
+    for i, tournament_id in enumerate(tournaments, 1):
         matches = scrape_tournament_page(tournament_id)
         all_matches.extend(matches)
         
-        # Be respectful - don't hammer the server
-        time.sleep(1)
+        # Be respectful - wait 5 seconds between requests to avoid rate limiting
+        if i < len(tournaments):
+            logger.info(f"  Waiting 5 seconds... ({i}/{len(tournaments)} complete)")
+            time.sleep(5)
     
     if not all_matches:
         logger.warning("⚠️  No matches found. The scraper may need adjustment.")
