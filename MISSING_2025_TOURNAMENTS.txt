@@ -1,7 +1,7 @@
 ====================================================================================================
 MISSING 2025 ATP TOURNAMENTS (UPDATED)
 ====================================================================================================
-Generated: 2025-10-14 (After Grand Slam Loading)
+Generated: 2025-10-14 (After Grand Slams + Indian Wells)
 ====================================================================================================
 
 
@@ -12,9 +12,9 @@ Generated: 2025-10-14 (After Grand Slam Loading)
   ✅ Wimbledon                 London               Grass           Jun 30 - Jul 13      [53 matches]
   ✅ US Open                   New York             Hard            Aug 25 - Sep 7       [71 matches]
 
-MASTERS 1000 (9 missing)
+MASTERS 1000 (7 missing)
 ----------------------------------------------------------------------------------------------------
-  • Indian Wells              California           Hard            Mar 5-16             [Masters 1000]
+  ✅ Indian Wells              California           Hard            Mar 5-16             [95 matches] 🏆 Jack Draper
   • Miami                     Florida              Hard            Mar 19-30            [Masters 1000]
   • Monte Carlo               Monaco               Clay            Apr 6-13             [Masters 1000]
   • Madrid                    Spain                Clay            Apr 24 - May 4       [Masters 1000]
@@ -22,16 +22,13 @@ MASTERS 1000 (9 missing)
   • Canada                    Montreal/Toronto     Hard            Aug 4-10             [Masters 1000]
   • Cincinnati                Ohio                 Hard            Aug 11-17            [Masters 1000]
   • Shanghai                  China                Hard            Oct 5-12             [Masters 1000]
-  • Paris                     France               Indoor Hard     Oct 27 - Nov 2       [Masters 1000]
 
-ATP 500 (4 missing)
+ATP 500 (2 missing)
 ----------------------------------------------------------------------------------------------------
   • Rio de Janeiro            Brazil               Clay            Feb 17-23            [ATP 500]
   • Washington                USA                  Hard            Jul 28 - Aug 3       [ATP 500]
-  • Basel                     Switzerland          Indoor Hard     Oct 20-26            [ATP 500]
-  • Vienna                    Austria              Indoor Hard     Oct 20-26            [ATP 500]
 
-ATP 250 (15 missing)
+ATP 250 (10 missing)
 ----------------------------------------------------------------------------------------------------
   • Buenos Aires              Argentina            Clay            Feb 17-23            [ATP 250]
   • Delray Beach              USA                  Hard            Feb 17-23            [ATP 250]
@@ -43,17 +40,15 @@ ATP 250 (15 missing)
   • Atlanta                   USA                  Hard            Jul 28 - Aug 3       [ATP 250]
   • Kitzbuhel                 Austria              Clay            Jul 28 - Aug 3       [ATP 250]
   • Zhuhai                    China                Hard            Sep 22-28            [ATP 250]
-  • Antwerp                   Belgium              Indoor Hard     Oct 13-19            [ATP 250]
-  • Stockholm                 Sweden               Indoor Hard     Oct 13-19            [ATP 250]
-  • Almaty                    Kazakhstan           Hard            Oct 13-19            [ATP 250]
-  • Metz                      France               Indoor Hard     Oct 27 - Nov 2       [ATP 250]
-  • Belgrade                  Serbia               Indoor Hard     Oct 27 - Nov 2       [ATP 250]
 
 ====================================================================================================
-TOURNAMENTS WE HAVE (31 total)
+TOURNAMENTS WE HAVE (32 total)
 ====================================================================================================
 ✅ Grand Slams (4):
    Australian Open, French Open, Wimbledon, US Open
+
+✅ Masters 1000 (1):
+   Indian Wells
 
 ✅ ATP 500 (0):
    None yet
@@ -66,21 +61,22 @@ TOURNAMENTS WE HAVE (31 total)
 ====================================================================================================
 SUMMARY
 ====================================================================================================
-Total ATP tournaments in 2025: 59
-Tournaments we have: 31 (including ALL 4 Grand Slams! 🎾)
-Tournaments missing: 28
-Coverage: 31/59 (52.5%)
+Total ATP tournaments in 2025 (through Oct 14): 51
+Tournaments we have: 32 (including ALL 4 Grand Slams + Indian Wells! 🎾)
+Tournaments missing: 19
+Coverage: 32/51 (62.7%)
 
-Database Stats:
-  • Total 2025 matches: 2,649
+Database Stats (after loading Indian Wells):
+  • Total 2025 matches: ~2,744 (2,649 + 95 Indian Wells)
   • Grand Slam matches: 258 (all rounds R128 through Finals)
+  • Masters 1000 matches: 95 (Indian Wells - all rounds R64 through Final)
   • Date range: Jan 1 - Sep 29, 2025
 
 PRIORITY FOR REMAINING TOURNAMENTS:
   1. ✅ Grand Slams (4/4) - COMPLETE! 🏆
-  2. Masters 1000 (0/9) - High-level tournaments, next priority
-  3. ATP 500 (0/4) - Including Rio de Janeiro
-  4. ATP 250 (15 remaining) - Lower priority
+  2. Masters 1000 (1/8) - Indian Wells complete! 7 remaining
+  3. ATP 500 (0/2) - Rio de Janeiro, Washington
+  4. ATP 250 (10 remaining) - Lower priority
 
 GRAND SLAM CHAMPIONS 2025:
   🏆 Australian Open: Jannik Sinner def. Alexander Zverev
@@ -89,4 +85,7 @@ GRAND SLAM CHAMPIONS 2025:
   🏆 US Open: Carlos Alcaraz def. Jannik Sinner
   
   Grand Slam Head-to-Head: Sinner 2-2 Alcaraz (Perfect split!)
+
+MASTERS 1000 CHAMPIONS 2025:
+  🏆 Indian Wells: Jack Draper def. Holger Rune 6-2, 6-2
 ====================================================================================================
