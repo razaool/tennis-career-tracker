@@ -15,6 +15,12 @@ logger = logging.getLogger(__name__)
 
 def main():
     """Load only 2025 data"""
+    # Accept file path as command line argument
+    if len(sys.argv) > 1:
+        file_path = Path(sys.argv[1])
+    else:
+        file_path = Path('/Users/razaool/tennis-career-tracker/data/raw/atp_matches_grand_slams_2025_all.csv')
+    
     logger.info("=" * 70)
     logger.info("LOADING 2025 MATCH DATA")
     logger.info("=" * 70)
@@ -22,9 +28,6 @@ def main():
     # Initialize
     db = DatabaseManager()
     parser = TennisDataParser(db)
-    
-    # Load the converted 2025 file
-    file_path = Path('/Users/razaool/tennis-career-tracker/data/raw/atp_matches_2025_converted.csv')
     
     if not file_path.exists():
         logger.error(f"File not found: {file_path}")
@@ -37,7 +40,7 @@ def main():
         
         if matches_data:
             inserted = db.bulk_insert_matches(matches_data)
-            logger.info(f"✅ Inserted {inserted} matches from 2025")
+            logger.info(f"✅ Inserted {inserted} matches from {file_path.name}")
         else:
             logger.warning("No matches to insert")
     
