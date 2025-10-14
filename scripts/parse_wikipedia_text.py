@@ -62,6 +62,9 @@ def parse_round(round_text):
     # Remove any bracketed annotations like [a], [b]
     round_text = re.sub(r'\[.*?\]', '', round_text).strip()
     
+    # Remove leading dash and "- " pattern
+    round_text = round_text.lstrip('-').strip()
+    
     round_map = {
         '1st round': 'R128',
         '2nd round': 'R64',
@@ -126,20 +129,20 @@ def parse_wikipedia_text(text, tournament_name, year=2025, default_date=None):
             continue
         
         # Look for match lines with the pattern: Event\tWinner\tLoser\tScore
-        # Men's singles lines
-        if line.startswith("Men's singles"):
+        # Men's singles lines (case-insensitive)
+        if line.lower().startswith("men's singles"):
             # Extract round, winner, loser, score
             # Pattern: Men's singles ROUND\tWINNER\tLOSER\tSCORE
             parts = line.split('\t')
             
             if len(parts) >= 4:
-                event_round = parts[0]  # "Men's singles 1st Round"
+                event_round = parts[0]  # "Men's singles 1st Round" or "Men's Singles Final"
                 winner_text = parts[1]
                 loser_text = parts[2]
                 score_text = parts[3]
                 
-                # Extract round from event
-                round_match = re.search(r"Men's singles\s+(.+)", event_round)
+                # Extract round from event (case-insensitive)
+                round_match = re.search(r"Men's singles\s+(.+)", event_round, re.IGNORECASE)
                 if round_match:
                     round_text = round_match.group(1)
                     round_code = parse_round(round_text)
