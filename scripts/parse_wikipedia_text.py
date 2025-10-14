@@ -71,7 +71,9 @@ def parse_round(round_text):
         '3rd round': 'R32',
         '4th round': 'R16',
         'quarterfinals': 'QF',
+        'quarter-finals': 'QF',  # Wimbledon format
         'semifinals': 'SF',
+        'semi-finals': 'SF',  # Wimbledon format
         'final': 'F'
     }
     
@@ -129,8 +131,8 @@ def parse_wikipedia_text(text, tournament_name, year=2025, default_date=None):
             continue
         
         # Look for match lines with the pattern: Event\tWinner\tLoser\tScore
-        # Men's singles lines (case-insensitive)
-        if line.lower().startswith("men's singles"):
+        # Men's singles lines (case-insensitive, handles "Men's singles" and "Gentlemen's Singles")
+        if line.lower().startswith("men's singles") or line.lower().startswith("gentlemen's singles"):
             # Extract round, winner, loser, score
             # Pattern: Men's singles ROUND\tWINNER\tLOSER\tSCORE
             parts = line.split('\t')
@@ -141,8 +143,8 @@ def parse_wikipedia_text(text, tournament_name, year=2025, default_date=None):
                 loser_text = parts[2]
                 score_text = parts[3]
                 
-                # Extract round from event (case-insensitive)
-                round_match = re.search(r"Men's singles\s+(.+)", event_round, re.IGNORECASE)
+                # Extract round from event (case-insensitive, handles both "Men's singles" and "Gentlemen's Singles")
+                round_match = re.search(r"(?:Men's singles|Gentlemen's Singles)\s+(.+)", event_round, re.IGNORECASE)
                 if round_match:
                     round_text = round_match.group(1)
                     round_code = parse_round(round_text)
