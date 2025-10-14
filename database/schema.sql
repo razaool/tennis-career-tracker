@@ -91,20 +91,20 @@ CREATE TABLE matches (
     -- Constraints
     CONSTRAINT different_players CHECK (player1_id != player2_id),
     CONSTRAINT valid_winner CHECK (winner_id IN (player1_id, player2_id)),
-    CONSTRAINT valid_surface CHECK (surface IN ('clay', 'grass', 'hard', 'carpet', 'none')),
-    
-    -- Indexes for fast queries
-    INDEX idx_date (date),
-    INDEX idx_player1 (player1_id),
-    INDEX idx_player2 (player2_id),
-    INDEX idx_winner (winner_id),
-    INDEX idx_surface (surface),
-    INDEX idx_tournament (tournament_name),
-    INDEX idx_tier (tournament_tier),
-    INDEX idx_date_surface (date, surface),
-    INDEX idx_player1_date (player1_id, date),
-    INDEX idx_player2_date (player2_id, date)
+    CONSTRAINT valid_surface CHECK (surface IN ('clay', 'grass', 'hard', 'carpet', 'none'))
 );
+
+-- Create indexes for matches table
+CREATE INDEX idx_matches_date ON matches(date);
+CREATE INDEX idx_matches_player1 ON matches(player1_id);
+CREATE INDEX idx_matches_player2 ON matches(player2_id);
+CREATE INDEX idx_matches_winner ON matches(winner_id);
+CREATE INDEX idx_matches_surface ON matches(surface);
+CREATE INDEX idx_matches_tournament ON matches(tournament_name);
+CREATE INDEX idx_matches_tier ON matches(tournament_tier);
+CREATE INDEX idx_matches_date_surface ON matches(date, surface);
+CREATE INDEX idx_matches_player1_date ON matches(player1_id, date);
+CREATE INDEX idx_matches_player2_date ON matches(player2_id, date);
 
 -- Player ratings table (output of Bayesian model)
 CREATE TABLE player_ratings (
@@ -145,12 +145,14 @@ CREATE TABLE player_ratings (
     calculated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     model_version VARCHAR(20),  -- Track model iterations
     
-    -- Indexes
-    INDEX idx_player_date (player_id, date),
-    INDEX idx_player_match_num (player_id, career_match_number),
-    INDEX idx_rating_date (date),
+    -- Unique constraint
     UNIQUE (player_id, match_id)
 );
+
+-- Create indexes for player_ratings table
+CREATE INDEX idx_ratings_player_date ON player_ratings(player_id, date);
+CREATE INDEX idx_ratings_player_match_num ON player_ratings(player_id, career_match_number);
+CREATE INDEX idx_ratings_date ON player_ratings(date);
 
 -- Player career summary table (for quick lookups)
 CREATE TABLE player_career_stats (
