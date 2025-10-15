@@ -23,9 +23,9 @@ MASTERS 1000 (7 missing)
   • Cincinnati                Ohio                 Hard            Aug 11-17            [Masters 1000]
   • Shanghai                  China                Hard            Oct 5-12             [Masters 1000]
 
-ATP 500 (2 missing)
+ATP 500 (1 missing)
 ----------------------------------------------------------------------------------------------------
-  • Rio de Janeiro            Brazil               Clay            Feb 17-23            [ATP 500]
+  ✅ Rio de Janeiro           Brazil               Clay            Feb 17-23            [31 matches] 🏆 Alexandre Müller
   • Washington                USA                  Hard            Jul 28 - Aug 3       [ATP 500]
 
 ATP 250 (10 missing)
@@ -50,8 +50,8 @@ TOURNAMENTS WE HAVE (32 total)
 ✅ Masters 1000 (1):
    Indian Wells
 
-✅ ATP 500 (0):
-   None yet
+✅ ATP 500 (1):
+   Rio de Janeiro
 
 ✅ ATP 250 (27):
    Acapulco, Adelaide, Auckland, Barcelona, Bastad, Beijing, Brisbane, Chengdu, Dallas, Doha,
@@ -62,20 +62,21 @@ TOURNAMENTS WE HAVE (32 total)
 SUMMARY
 ====================================================================================================
 Total ATP tournaments in 2025 (through Oct 14): 51
-Tournaments we have: 32 (including ALL 4 Grand Slams + Indian Wells! 🎾)
-Tournaments missing: 19
-Coverage: 32/51 (62.7%)
+Tournaments we have: 33 (including ALL 4 Grand Slams + Rio! 🎾)
+Tournaments missing: 18
+Coverage: 33/51 (64.7%)
 
-Database Stats (after loading Indian Wells):
-  • Total 2025 matches: ~2,744 (2,649 + 95 Indian Wells)
+Database Stats (after loading Rio):
+  • Total 2025 matches: ~2,775 (2,744 + 31 Rio)
   • Grand Slam matches: 258 (all rounds R128 through Finals)
-  • Masters 1000 matches: 95 (Indian Wells - all rounds R64 through Final)
+  • Masters 1000 matches: 95 (Indian Wells)
+  • ATP 500 matches: 31 (Rio de Janeiro)
   • Date range: Jan 1 - Sep 29, 2025
 
 PRIORITY FOR REMAINING TOURNAMENTS:
   1. ✅ Grand Slams (4/4) - COMPLETE! 🏆
   2. Masters 1000 (1/8) - Indian Wells complete! 7 remaining
-  3. ATP 500 (0/2) - Rio de Janeiro, Washington
+  3. ATP 500 (1/2) - Rio complete! Washington remaining
   4. ATP 250 (10 remaining) - Lower priority
 
 GRAND SLAM CHAMPIONS 2025:
@@ -88,4 +89,7 @@ GRAND SLAM CHAMPIONS 2025:
 
 MASTERS 1000 CHAMPIONS 2025:
   🏆 Indian Wells: Jack Draper def. Holger Rune 6-2, 6-2
+
+ATP 500 CHAMPIONS 2025:
+  🏆 Rio de Janeiro: Alexandre Müller def. Sebastian Báez 6-3, 6-4
 ====================================================================================================
