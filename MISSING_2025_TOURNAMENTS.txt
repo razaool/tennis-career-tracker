@@ -12,13 +12,13 @@ Generated: 2025-10-14 (After Grand Slams + Indian Wells)
   ✅ Wimbledon                 London               Grass           Jun 30 - Jul 13      [53 matches]
   ✅ US Open                   New York             Hard            Aug 25 - Sep 7       [71 matches]
 
-MASTERS 1000 (4 missing)
+MASTERS 1000 (3 missing)
 ----------------------------------------------------------------------------------------------------
   ✅ Indian Wells              California           Hard            Mar 5-16             [95 matches] 🏆 Jack Draper
   ✅ Miami                     Florida              Hard            Mar 19-30            [95 matches] 🏆 Jakub Mensik
   ✅ Monte Carlo               Monaco               Clay            Apr 6-13             [55 matches] 🏆 Carlos Alcaraz
   ✅ Madrid                    Spain                Clay            Apr 24 - May 4       [95 matches] 🏆 Casper Ruud
-  • Rome                      Italy                Clay            May 8-18             [Masters 1000]
+  ✅ Rome                      Italy                Clay            May 8-18             [95 matches] 🏆 Carlos Alcaraz
   • Canada                    Montreal/Toronto     Hard            Aug 4-10             [Masters 1000]
   • Cincinnati                Ohio                 Hard            Aug 11-17            [Masters 1000]
   • Shanghai                  China                Hard            Oct 5-12             [Masters 1000]
@@ -42,8 +42,8 @@ TOURNAMENTS WE HAVE (32 total)
 ✅ Grand Slams (4):
    Australian Open, French Open, Wimbledon, US Open
 
-✅ Masters 1000 (4):
-   Indian Wells, Miami, Monte Carlo, Madrid
+✅ Masters 1000 (5):
+   Indian Wells, Miami, Monte Carlo, Madrid, Rome
 
 ✅ ATP 500 (2/2 - COMPLETE):
    Rio de Janeiro, Washington DC
@@ -58,14 +58,14 @@ TOURNAMENTS WE HAVE (32 total)
 SUMMARY
 ====================================================================================================
 Total ATP tournaments in 2025 (through Oct 14): 46
-Tournaments we have: 42 (ALL Grand Slams + ALL ATP 500s + ALL ATP 250s 🎾)
-Tournaments missing: 4 (Masters 1000 only)
-Coverage: 42/46 (91.3%)
+Tournaments we have: 43 (ALL Grand Slams + ALL ATP 500s + ALL ATP 250s 🎾)
+Tournaments missing: 3 (Masters 1000 only)
+Coverage: 43/46 (93.5%)
 
-Database Stats (after loading Madrid):
-  • Total 2025 matches: ~3,211 (3,116 + 95 Madrid)
+Database Stats (after loading Rome):
+  • Total 2025 matches: ~3,306 (3,211 + 95 Rome)
   • Grand Slam matches: 258 (ALL 4 Grand Slams - COMPLETE)
-  • Masters 1000 matches: 340 (4 of 8 tournaments - 50% complete)
+  • Masters 1000 matches: 435 (5 of 8 tournaments - 62.5% complete)
   • ATP 500 matches: 87 (BOTH tournaments - COMPLETE)
   • ATP 250 matches: 32 tournaments (ALL 32 - COMPLETE)
   • Date range: Jan 1 - Sep 29, 2025
@@ -74,7 +74,7 @@ PRIORITY FOR REMAINING TOURNAMENTS:
   1. ✅ Grand Slams (4/4) - COMPLETE 🏆
   2. ✅ ATP 500 (2/2) - COMPLETE 🏆
   3. ✅ ATP 250 (32/32) - COMPLETE 🏆
-  4. Masters 1000 (4/8) - HALFWAY THERE 4 remaining (Rome, Canada, Cincinnati, Shanghai)
+  4. Masters 1000 (5/8) - 62.5% complete 3 remaining (Canada, Cincinnati, Shanghai)
 
 GRAND SLAM CHAMPIONS 2025:
   🏆 Australian Open: Jannik Sinner def. Alexander Zverev
@@ -93,6 +93,9 @@ MASTERS 1000 CHAMPIONS 2025:
      (Upsets: A Tabilo def. #3 Djokovic, M Berrettini def. #1 Zverev)
   🏆 Madrid: Casper Ruud def. Jack Draper 7-5, 3-6, 6-4
      (Upsets: M Arnaldi def. #4 Djokovic, F Cerúndolo def. #1 Zverev)
+  🏆 Rome: Carlos Alcaraz def. Jannik Sinner 7-6(5), 6-1
+     (Alcaraz-Sinner final sets up French Open showdown)
+     (Upset: M Giron def. #4 T Fritz)
 
 ATP 500 CHAMPIONS 2025 (COMPLETE SET):
   🏆 Rio de Janeiro: Alexandre Müller def. Sebastian Báez 6-3, 6-4
