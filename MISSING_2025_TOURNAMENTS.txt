@@ -12,10 +12,10 @@ Generated: 2025-10-14 (After Grand Slams + Indian Wells)
   ✅ Wimbledon                 London               Grass           Jun 30 - Jul 13      [53 matches]
   ✅ US Open                   New York             Hard            Aug 25 - Sep 7       [71 matches]
 
-MASTERS 1000 (7 missing)
+MASTERS 1000 (6 missing)
 ----------------------------------------------------------------------------------------------------
   ✅ Indian Wells              California           Hard            Mar 5-16             [95 matches] 🏆 Jack Draper
-  • Miami                     Florida              Hard            Mar 19-30            [Masters 1000]
+  ✅ Miami                     Florida              Hard            Mar 19-30            [95 matches] 🏆 Jakub Mensik
   • Monte Carlo               Monaco               Clay            Apr 6-13             [Masters 1000]
   • Madrid                    Spain                Clay            Apr 24 - May 4       [Masters 1000]
   • Rome                      Italy                Clay            May 8-18             [Masters 1000]
@@ -42,8 +42,8 @@ TOURNAMENTS WE HAVE (32 total)
 ✅ Grand Slams (4):
    Australian Open, French Open, Wimbledon, US Open
 
-✅ Masters 1000 (1):
-   Indian Wells
+✅ Masters 1000 (2):
+   Indian Wells, Miami
 
 ✅ ATP 500 (2/2 - COMPLETE):
    Rio de Janeiro, Washington DC
@@ -58,14 +58,14 @@ TOURNAMENTS WE HAVE (32 total)
 SUMMARY
 ====================================================================================================
 Total ATP tournaments in 2025 (through Oct 14): 46
-Tournaments we have: 39 (ALL Grand Slams + ALL ATP 500s + ALL ATP 250s 🎾)
-Tournaments missing: 7 (Masters 1000 only)
-Coverage: 39/46 (84.8%)
+Tournaments we have: 40 (ALL Grand Slams + ALL ATP 500s + ALL ATP 250s 🎾)
+Tournaments missing: 6 (Masters 1000 only)
+Coverage: 40/46 (87.0%)
 
-Database Stats (final):
-  • Total 2025 matches: ~2,966
+Database Stats (after loading Miami):
+  • Total 2025 matches: ~3,061 (2,966 + 95 Miami)
   • Grand Slam matches: 258 (ALL 4 Grand Slams - COMPLETE)
-  • Masters 1000 matches: 95 (1 of 8 tournaments)
+  • Masters 1000 matches: 190 (2 of 8 tournaments)
   • ATP 500 matches: 87 (BOTH tournaments - COMPLETE)
   • ATP 250 matches: 32 tournaments (ALL 32 - COMPLETE)
   • Date range: Jan 1 - Sep 29, 2025
@@ -74,7 +74,7 @@ PRIORITY FOR REMAINING TOURNAMENTS:
   1. ✅ Grand Slams (4/4) - COMPLETE 🏆
   2. ✅ ATP 500 (2/2) - COMPLETE 🏆
   3. ✅ ATP 250 (32/32) - COMPLETE 🏆
-  4. Masters 1000 (1/8) - Indian Wells complete 7 remaining (ONLY CATEGORY LEFT)
+  4. Masters 1000 (2/8) - Indian Wells + Miami complete 6 remaining (ONLY CATEGORY LEFT)
 
 GRAND SLAM CHAMPIONS 2025:
   🏆 Australian Open: Jannik Sinner def. Alexander Zverev
@@ -86,6 +86,9 @@ GRAND SLAM CHAMPIONS 2025:
 
 MASTERS 1000 CHAMPIONS 2025:
   🏆 Indian Wells: Jack Draper def. Holger Rune 6-2, 6-2
+  🏆 Miami: Jakub Mensik def. Novak Djokovic 7-6(4), 7-6(4)
+     (Age 18 - Youngest Miami champion ever)
+     (Upsets: D Goffin def. #2 Alcaraz, J Munar def. #7 Medvedev, Z Bergs def. #8 Rublev)
 
 ATP 500 CHAMPIONS 2025 (COMPLETE SET):
   🏆 Rio de Janeiro: Alexandre Müller def. Sebastian Báez 6-3, 6-4
