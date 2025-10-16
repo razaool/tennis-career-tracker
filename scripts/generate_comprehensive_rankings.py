@@ -244,14 +244,14 @@ def generate_combined_rankings(db, year=2024, active_months=6, window_size=50, t
         # Add indicators
         indicators = []
         if player['current_elo'] and player['rolling_avg_elo']:
-            diff = player['current_elo'] - player['rolling_avg_elo']
+            diff = float(player['current_elo']) - float(player['rolling_avg_elo'])
             if diff > 50:
                 indicators.append("🔥")  # Hot streak
             elif diff < -50:
                 indicators.append("❄️")  # Cold streak
         
         if player['peak_elo'] and player['rolling_avg_elo']:
-            if player['peak_elo'] - player['rolling_avg_elo'] < 50:
+            if float(player['peak_elo']) - float(player['rolling_avg_elo']) < 50:
                 indicators.append("⭐")  # Near peak
         
         indicator_str = " ".join(indicators)
@@ -286,28 +286,28 @@ def generate_combined_rankings(db, year=2024, active_months=6, window_size=50, t
     
     # Find players on hot/cold streaks
     hot_streaks = [p for p in combined if p['current_elo'] and p['rolling_avg_elo'] 
-                   and p['current_elo'] - p['rolling_avg_elo'] > 50]
+                   and float(p['current_elo']) - float(p['rolling_avg_elo']) > 50]
     cold_streaks = [p for p in combined if p['current_elo'] and p['rolling_avg_elo'] 
-                    and p['rolling_avg_elo'] - p['current_elo'] > 50]
+                    and float(p['rolling_avg_elo']) - float(p['current_elo']) > 50]
     near_peak = [p for p in combined if p['peak_elo'] and p['rolling_avg_elo'] 
-                 and p['peak_elo'] - p['rolling_avg_elo'] < 50]
+                 and float(p['peak_elo']) - float(p['rolling_avg_elo']) < 50]
     
     if hot_streaks:
         logger.info("\n🔥 HOT STREAKS (Current ELO > 50 points above rolling avg):")
         for p in hot_streaks[:5]:
-            diff = p['current_elo'] - p['rolling_avg_elo']
+            diff = float(p['current_elo']) - float(p['rolling_avg_elo'])
             logger.info(f"   {p['name']:<25} Current: {p['current_elo']:.1f}  Avg: {p['rolling_avg_elo']:.1f}  (+{diff:.1f})")
     
     if cold_streaks:
         logger.info("\n❄️  COLD STREAKS (Current ELO > 50 points below rolling avg):")
         for p in cold_streaks[:5]:
-            diff = p['rolling_avg_elo'] - p['current_elo']
+            diff = float(p['rolling_avg_elo']) - float(p['current_elo'])
             logger.info(f"   {p['name']:<25} Current: {p['current_elo']:.1f}  Avg: {p['rolling_avg_elo']:.1f}  (-{diff:.1f})")
     
     if near_peak:
         logger.info(f"\n⭐ NEAR PEAK FORM (Within 50 points of {year} peak):")
         for p in near_peak[:5]:
-            diff = p['peak_elo'] - p['rolling_avg_elo']
+            diff = float(p['peak_elo']) - float(p['rolling_avg_elo'])
             logger.info(f"   {p['name']:<25} Peak: {p['peak_elo']:.1f}  Current Avg: {p['rolling_avg_elo']:.1f}  (-{diff:.1f})")
     
     # Metric explanations
