@@ -99,7 +99,7 @@ python -m database.db_manager
 ```
 INFO - Created database: tennis_tracker
 INFO - Database schema created successfully
-✅ Database initialized successfully!
+✅ Database initialized successfully
 
 Current database stats:
   players: 0 rows
@@ -218,7 +218,7 @@ python -m database.db_manager
 
 **To completely reset database:**
 ```bash
-# ⚠️ This deletes all data!
+# ⚠️ This deletes all data
 python -c "from database.db_manager import DatabaseManager; DatabaseManager().reset_database()"
 ```
 
@@ -299,5 +299,5 @@ If you encounter issues:
 
 ---
 
-**Ready to build the future of tennis analytics! 🎾**
+**Ready to build the future of tennis analytics 🎾**
 

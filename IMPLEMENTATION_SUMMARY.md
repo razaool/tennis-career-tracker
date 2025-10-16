@@ -145,7 +145,7 @@ Expected output:
 ✅ PASS - Data Loaded
 ✅ PASS - Sample Queries
 
-🎉 All tests passed!
+🎉 All tests passed
 ```
 
 ### Step 3: Explore Your Data
@@ -474,13 +474,13 @@ You're building something the tennis community **desperately needs**:
 - 📅 **Phase 3:** API backend
 - 📅 **Phase 4:** Frontend visualization
 
-**The hardest part (data infrastructure) is done. Time to build the intelligence layer!**
+**The hardest part (data infrastructure) is done. Time to build the intelligence layer**
 
 ---
 
 **Built with ❤️ for tennis analytics**
 
-*Questions? Check the docs. Issues? Run test_setup.py. Ready? Start Phase 2!*
+*Questions? Check the docs. Issues? Run test_setup.py. Ready? Start Phase 2*
 
-🎾 **Let's track some careers!**
+🎾 **Let's track some careers**
 

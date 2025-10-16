@@ -1,6 +1,6 @@
 # What to Do Next 🚀
 
-Your Tennis Career Tracker data foundation is complete! Here's your roadmap.
+Your Tennis Career Tracker data foundation is complete Here's your roadmap.
 
 ---
 
@@ -37,7 +37,7 @@ python scripts/test_setup.py
 ✅ PASS - Tables Exist
 ✅ PASS - Data Loaded
 ✅ PASS - Sample Queries
-🎉 All tests passed!
+🎉 All tests passed
 ```
 
 ### 2. Explore Your Data (10 minutes)
@@ -413,7 +413,7 @@ git push origin phase-2-elo-calculations
 ## 🎯 Your Roadmap
 
 ```
-Week 1-2:  ✅ Data Foundation (DONE!)
+Week 1-2:  ✅ Data Foundation (DONE)
 Week 3-4:  ⏳ Basic ELO + Bayesian Model
 Week 5:    ⏳ GP Smoothing + Supporting Metrics
 Week 6-7:  📅 FastAPI Backend
@@ -442,7 +442,7 @@ Total: ~10 weeks to production 🚀
 
 ---
 
-## 🎉 You're Ready!
+## 🎉 You're Ready
 
 ### What You Have:
 ✅ Production-ready data infrastructure  
@@ -472,7 +472,7 @@ psql -U postgres -d tennis_tracker
 # (reference: config.py for parameters)
 ```
 
-**The foundation is solid. Time to build something amazing! 🎾**
+**The foundation is solid. Time to build something amazing 🎾**
 
 ---
 

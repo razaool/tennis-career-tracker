@@ -198,7 +198,7 @@ END_YEAR=2024
 
 ## 🤝 Contributing
 
-Contributions welcome! Please read our contributing guidelines.
+Contributions welcome Please read our contributing guidelines.
 
 ## 📄 License
 

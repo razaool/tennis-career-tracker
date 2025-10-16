@@ -119,7 +119,7 @@ with open('data/raw/tennis_abstract_2025_complete.csv', 'w', newline='') as f:
 
 ### **First Scrape Results (Oct 14, 2025):**
 - **Scraped:** 279 matches from 9 tournaments
-- **Success rate:** 18.4% (1-second delay - too fast!)
+- **Success rate:** 18.4% (1-second delay - too fast)
 - **Rate limited:** 40 times
 
 ### **Tournaments Captured:**

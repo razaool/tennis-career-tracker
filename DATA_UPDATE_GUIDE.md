@@ -29,7 +29,7 @@ This script will:
 🔄 Recalculating ELO ratings...
 ✅ ELO ratings recalculated successfully
 📤 Regenerating export files...
-✅ UPDATE COMPLETE!
+✅ UPDATE COMPLETE
 ```
 
 ---
@@ -373,5 +373,5 @@ psql -U postgres -d tennis_tracker -c "
 
 ---
 
-**Need help?** Check the Tennis Abstract GitHub issues or open an issue in your repo!
+**Need help?** Check the Tennis Abstract GitHub issues or open an issue in your repo
 

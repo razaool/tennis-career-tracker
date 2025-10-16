@@ -1,6 +1,6 @@
 # Quick Start Guide ⚡
 
-Get your Tennis Career Tracker running in 5 minutes!
+Get your Tennis Career Tracker running in 5 minutes
 
 ## Prerequisites Check
 
@@ -68,7 +68,7 @@ python scripts/test_setup.py
 ✅ PASS - Data Loaded
 ✅ PASS - Sample Queries
 
-🎉 All tests passed! Your setup is complete.
+🎉 All tests passed Your setup is complete.
 ```
 
 ## What You Have Now
@@ -173,7 +173,7 @@ ALTER USER postgres PASSWORD 'your_password';
 
 **Want to reset everything?**
 ```bash
-# ⚠️ Deletes all data!
+# ⚠️ Deletes all data
 python -c "from database.db_manager import DatabaseManager; DatabaseManager().reset_database()"
 python scripts/setup_all.py
 ```
@@ -208,7 +208,7 @@ tennis-career-tracker/
 
 ---
 
-**You're ready to build! 🎾**
+**You're ready to build 🎾**
 
 Next: Implement the Bayesian rating calculations to bring the visualizations to life.
 

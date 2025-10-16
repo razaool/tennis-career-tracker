@@ -24,7 +24,7 @@ This project uses **three different ELO-based metrics** to capture different asp
 **Example:**
 ```
 Carlos Alcaraz after losing to Ruud: 2520.8
-(Down from 2878.6 peak - doesn't reflect his Grand Slam wins!)
+(Down from 2878.6 peak - doesn't reflect his Grand Slam wins)
 ```
 
 ---
@@ -48,7 +48,7 @@ Carlos Alcaraz after losing to Ruud: 2520.8
 Carlos Alcaraz:
 - Current ELO: 2520.8 (after losses)
 - 50-match avg: 2696.1 (includes Wimbledon + French Open wins)
-The average is a better representation of his true skill!
+The average is a better representation of his true skill
 ```
 
 ---
@@ -87,7 +87,7 @@ Carlos Alcaraz Peak 2024: 2878.6
 | 4 | Zverev 2650.9 | Fritz 2592.8 | Zverev 2701.8 |
 | 5 | Draper 2577.9 | Zverev 2580.5 | Medvedev 2701.6 |
 
-**⭐ Key Finding:** Alcaraz ranks **#8** by current ELO but **#2** by rolling average and peak! The current ELO is misleading due to end-of-season losses.
+**⭐ Key Finding:** Alcaraz ranks **#8** by current ELO but **#2** by rolling average and peak The current ELO is misleading due to end-of-season losses.
 
 ---
 
@@ -95,7 +95,7 @@ Carlos Alcaraz Peak 2024: 2878.6
 
 ### 🔥 Hot Streaks (Current > Avg by 50+)
 Players performing above their average:
-- **Sinner**: +93 points (on fire!)
+- **Sinner**: +93 points (on fire)
 - **Draper**: +118 points (career-best form)
 - **Fritz**: +91 points (late-season surge)
 - **Zverev**: +70 points (upward trajectory)
@@ -138,7 +138,7 @@ Players struggling below their average:
 **Issue:** Inactive players maintain their last rating  
 **Example:**
 - Nick Kyrgios: Current ELO = 2531.5
-- Last match: October 2022 (2+ years ago!)
+- Last match: October 2022 (2+ years ago)
 - He ranks #7 but hasn't played in 2024
 
 **Solution:** Always filter by activity date
@@ -159,7 +159,7 @@ vs
 Sinner 2024:   2940.6 (faces Alcaraz, Zverev, but no Big 3)
 ```
 
-**Is Sinner > Djokovic?** Not necessarily! The 2024 field may be weaker.
+**Is Sinner > Djokovic?** Not necessarily The 2024 field may be weaker.
 
 ### The Solution:
 1. **Use Peak ELO only within same era** (compare 2024 players to each other)

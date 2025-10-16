@@ -28,14 +28,13 @@ ATP 500 (0 missing - COMPLETE)
   ✅ Rio de Janeiro           Brazil               Clay            Feb 17-23            [31 matches] 🏆 Alexandre Müller
   ✅ Washington DC             USA                  Hard            Jul 28 - Aug 3       [56 matches] 🏆 Alex de Minaur
 
-ATP 250 (1 missing)
+ATP 250 (0 missing - COMPLETE)
 ----------------------------------------------------------------------------------------------------
   ✅ Buenos Aires             Argentina            Clay            Feb 17-23            [27 matches] 🏆 João Fonseca
   ✅ Delray Beach             USA                  Hard            Feb 17-23            [27 matches] 🏆 Miomir Kecmanović
   ✅ s-Hertogenbosch          Netherlands          Grass           Jun 16-22            [27 matches] 🏆 Gabriel Diallo
   ✅ Umag                     Croatia              Clay            Jul 21-27            [27 matches] 🏆 Luciano Darderi
   ✅ Kitzbuhel                Austria              Clay            Jul 28 - Aug 3       [27 matches] 🏆 Alexander Bublik
-  • Zhuhai                    China                Hard            Sep 22-28            [ATP 250]
 
 ====================================================================================================
 TOURNAMENTS WE HAVE (32 total)
@@ -46,7 +45,7 @@ TOURNAMENTS WE HAVE (32 total)
 ✅ Masters 1000 (1):
    Indian Wells
 
-✅ ATP 500 (2/2 - COMPLETE!):
+✅ ATP 500 (2/2 - COMPLETE):
    Rio de Janeiro, Washington DC
 
 ✅ ATP 250 (32):
@@ -58,24 +57,24 @@ TOURNAMENTS WE HAVE (32 total)
 ====================================================================================================
 SUMMARY
 ====================================================================================================
-Total ATP tournaments in 2025 (through Oct 14): 47
-Tournaments we have: 39 (including ALL 4 Grand Slams + BOTH ATP 500s! 🎾)
-Tournaments missing: 8
-Coverage: 39/47 (83.0%)
+Total ATP tournaments in 2025 (through Oct 14): 46
+Tournaments we have: 39 (ALL Grand Slams + ALL ATP 500s + ALL ATP 250s 🎾)
+Tournaments missing: 7 (Masters 1000 only)
+Coverage: 39/46 (84.8%)
 
-Database Stats (after loading Kitzbuhel):
-  • Total 2025 matches: ~2,966 (2,939 + 27 Kitzbuhel)
-  • Grand Slam matches: 258 (all rounds R128 through Finals)
-  • Masters 1000 matches: 95 (Indian Wells)
-  • ATP 500 matches: 87 (Rio + Washington - COMPLETE!)
-  • ATP 250 matches: 32 tournaments loaded (97% coverage!)
+Database Stats (final):
+  • Total 2025 matches: ~2,966
+  • Grand Slam matches: 258 (ALL 4 Grand Slams - COMPLETE)
+  • Masters 1000 matches: 95 (1 of 8 tournaments)
+  • ATP 500 matches: 87 (BOTH tournaments - COMPLETE)
+  • ATP 250 matches: 32 tournaments (ALL 32 - COMPLETE)
   • Date range: Jan 1 - Sep 29, 2025
 
 PRIORITY FOR REMAINING TOURNAMENTS:
-  1. ✅ Grand Slams (4/4) - COMPLETE! 🏆
-  2. ✅ ATP 500 (2/2) - COMPLETE! 🏆
-  3. Masters 1000 (1/8) - Indian Wells complete! 7 remaining (TOP PRIORITY)
-  4. ATP 250 (32/33) - 1 remaining!
+  1. ✅ Grand Slams (4/4) - COMPLETE 🏆
+  2. ✅ ATP 500 (2/2) - COMPLETE 🏆
+  3. ✅ ATP 250 (32/32) - COMPLETE 🏆
+  4. Masters 1000 (1/8) - Indian Wells complete 7 remaining (ONLY CATEGORY LEFT)
 
 GRAND SLAM CHAMPIONS 2025:
   🏆 Australian Open: Jannik Sinner def. Alexander Zverev
@@ -83,12 +82,12 @@ GRAND SLAM CHAMPIONS 2025:
   🏆 Wimbledon: Jannik Sinner def. Carlos Alcaraz
   🏆 US Open: Carlos Alcaraz def. Jannik Sinner
   
-  Grand Slam Head-to-Head: Sinner 2-2 Alcaraz (Perfect split!)
+  Grand Slam Head-to-Head: Sinner 2-2 Alcaraz (Perfect split)
 
 MASTERS 1000 CHAMPIONS 2025:
   🏆 Indian Wells: Jack Draper def. Holger Rune 6-2, 6-2
 
-ATP 500 CHAMPIONS 2025 (COMPLETE SET!):
+ATP 500 CHAMPIONS 2025 (COMPLETE SET):
   🏆 Rio de Janeiro: Alexandre Müller def. Sebastian Báez 6-3, 6-4
   🏆 Washington DC: Alex de Minaur def. Alejandro Davidovich Fokina 5-7, 6-1, 7-6(3)
 

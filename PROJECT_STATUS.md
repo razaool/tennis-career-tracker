@@ -296,5 +296,5 @@ The end goal is a production web app where tennis fans can:
 4. **Track** current players in real-time
 5. **Share** beautiful visualizations on social media
 
-**We're ~20% done. Data foundation is solid. Time to build the intelligence layer!**
+**We're ~20% done. Data foundation is solid. Time to build the intelligence layer**
 
