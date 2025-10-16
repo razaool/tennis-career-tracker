@@ -28,15 +28,13 @@ ATP 500 (0 missing - COMPLETE)
   ✅ Rio de Janeiro           Brazil               Clay            Feb 17-23            [31 matches] 🏆 Alexandre Müller
   ✅ Washington DC             USA                  Hard            Jul 28 - Aug 3       [56 matches] 🏆 Alex de Minaur
 
-ATP 250 (5 missing)
+ATP 250 (1 missing)
 ----------------------------------------------------------------------------------------------------
   ✅ Buenos Aires             Argentina            Clay            Feb 17-23            [27 matches] 🏆 João Fonseca
   ✅ Delray Beach             USA                  Hard            Feb 17-23            [27 matches] 🏆 Miomir Kecmanović
   ✅ s-Hertogenbosch          Netherlands          Grass           Jun 16-22            [27 matches] 🏆 Gabriel Diallo
-  • Newport                   USA                  Grass           Jul 14-20            [ATP 250]
-  • Umag                      Croatia              Clay            Jul 21-27            [ATP 250]
-  • Atlanta                   USA                  Hard            Jul 28 - Aug 3       [ATP 250]
-  • Kitzbuhel                 Austria              Clay            Jul 28 - Aug 3       [ATP 250]
+  ✅ Umag                     Croatia              Clay            Jul 21-27            [27 matches] 🏆 Luciano Darderi
+  ✅ Kitzbuhel                Austria              Clay            Jul 28 - Aug 3       [27 matches] 🏆 Alexander Bublik
   • Zhuhai                    China                Hard            Sep 22-28            [ATP 250]
 
 ====================================================================================================
@@ -51,32 +49,33 @@ TOURNAMENTS WE HAVE (32 total)
 ✅ ATP 500 (2/2 - COMPLETE!):
    Rio de Janeiro, Washington DC
 
-✅ ATP 250 (30):
+✅ ATP 250 (32):
    Acapulco, Adelaide, Auckland, Barcelona, Bastad, Beijing, Brisbane, Buenos Aires, Chengdu, Dallas,
    Delray Beach, Doha, Dubai, Eastbourne, Geneva, Gstaad, Halle, Hamburg, Hangzhou, s-Hertogenbosch,
-   Houston, Mallorca, Marrakech, Marseille, Montpellier, Munich, Rotterdam, Stuttgart, Tokyo, Winston-Salem
+   Houston, Kitzbuhel, Mallorca, Marrakech, Marseille, Montpellier, Munich, Rotterdam, Stuttgart, Tokyo,
+   Umag, Winston-Salem
 
 ====================================================================================================
 SUMMARY
 ====================================================================================================
-Total ATP tournaments in 2025 (through Oct 14): 49
-Tournaments we have: 37 (including ALL 4 Grand Slams + BOTH ATP 500s! 🎾)
-Tournaments missing: 12
-Coverage: 37/49 (75.5%)
+Total ATP tournaments in 2025 (through Oct 14): 47
+Tournaments we have: 39 (including ALL 4 Grand Slams + BOTH ATP 500s! 🎾)
+Tournaments missing: 8
+Coverage: 39/47 (83.0%)
 
-Database Stats (after loading s-Hertogenbosch):
-  • Total 2025 matches: ~2,912 (2,885 + 27 s-Hertogenbosch)
+Database Stats (after loading Kitzbuhel):
+  • Total 2025 matches: ~2,966 (2,939 + 27 Kitzbuhel)
   • Grand Slam matches: 258 (all rounds R128 through Finals)
   • Masters 1000 matches: 95 (Indian Wells)
   • ATP 500 matches: 87 (Rio + Washington - COMPLETE!)
-  • ATP 250 matches: 30 tournaments loaded
+  • ATP 250 matches: 32 tournaments loaded (97% coverage!)
   • Date range: Jan 1 - Sep 29, 2025
 
 PRIORITY FOR REMAINING TOURNAMENTS:
   1. ✅ Grand Slams (4/4) - COMPLETE! 🏆
   2. ✅ ATP 500 (2/2) - COMPLETE! 🏆
   3. Masters 1000 (1/8) - Indian Wells complete! 7 remaining (TOP PRIORITY)
-  4. ATP 250 (30/35) - 5 remaining
+  4. ATP 250 (32/33) - 1 remaining!
 
 GRAND SLAM CHAMPIONS 2025:
   🏆 Australian Open: Jannik Sinner def. Alexander Zverev
@@ -100,4 +99,8 @@ NOTABLE ATP 250 CHAMPIONS 2025:
      (Upset: ADF def. #1 seed T Fritz 7-6(4) 7-6(5) in QF)
   🏆 s-Hertogenbosch: Gabriel Diallo def. Zizou Bergs 7-5, 7-6(10)
      (Upset: R Opelka def. #1 seed D Medvedev 7-6(5) 7-6(5) in QF)
+  🏆 Umag: Luciano Darderi def. Carlos Taberner 6-3, 6-3
+     (Upset: C Taberner def. #1 seed F Cerúndolo 6-7(2) 6-4 7-5 in R16)
+  🏆 Kitzbuhel: Alexander Bublik def. Arthur Cazaux 6-4, 6-3
+     (Upset: Y Hanfmann def. #2 seed S Báez 5-7 6-3 7-5 in R16)
 ====================================================================================================
