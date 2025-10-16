@@ -5,7 +5,7 @@ Generated: 2025-10-14 (After Grand Slams + Indian Wells)
 ====================================================================================================
 
 
-✅ GRAND SLAMS (4/4 COMPLETE - ALL LOADED!)
+✅ GRAND SLAMS (4/4 COMPLETE - ALL LOADED)
 ----------------------------------------------------------------------------------------------------
   ✅ Australian Open           Melbourne            Hard            Jan 12-26            [77 matches]
   ✅ French Open               Paris                Clay            May 25 - Jun 8       [57 matches]
@@ -23,18 +23,16 @@ MASTERS 1000 (7 missing)
   • Cincinnati                Ohio                 Hard            Aug 11-17            [Masters 1000]
   • Shanghai                  China                Hard            Oct 5-12             [Masters 1000]
 
-ATP 500 (0 missing - COMPLETE!)
+ATP 500 (0 missing - COMPLETE)
 ----------------------------------------------------------------------------------------------------
   ✅ Rio de Janeiro           Brazil               Clay            Feb 17-23            [31 matches] 🏆 Alexandre Müller
   ✅ Washington DC             USA                  Hard            Jul 28 - Aug 3       [56 matches] 🏆 Alex de Minaur
 
-ATP 250 (8 missing)
+ATP 250 (5 missing)
 ----------------------------------------------------------------------------------------------------
   ✅ Buenos Aires             Argentina            Clay            Feb 17-23            [27 matches] 🏆 João Fonseca
   ✅ Delray Beach             USA                  Hard            Feb 17-23            [27 matches] 🏆 Miomir Kecmanović
-  • Estoril                   Portugal             Clay            Apr 28 - May 4       [ATP 250]
-  • Lyon                      France               Clay            May 19-24            [ATP 250]
-  • s-Hertogenbosch           Netherlands          Grass           Jun 16-22            [ATP 250]
+  ✅ s-Hertogenbosch          Netherlands          Grass           Jun 16-22            [27 matches] 🏆 Gabriel Diallo
   • Newport                   USA                  Grass           Jul 14-20            [ATP 250]
   • Umag                      Croatia              Clay            Jul 21-27            [ATP 250]
   • Atlanta                   USA                  Hard            Jul 28 - Aug 3       [ATP 250]
@@ -53,32 +51,32 @@ TOURNAMENTS WE HAVE (32 total)
 ✅ ATP 500 (2/2 - COMPLETE!):
    Rio de Janeiro, Washington DC
 
-✅ ATP 250 (29):
+✅ ATP 250 (30):
    Acapulco, Adelaide, Auckland, Barcelona, Bastad, Beijing, Brisbane, Buenos Aires, Chengdu, Dallas,
-   Delray Beach, Doha, Dubai, Eastbourne, Geneva, Gstaad, Halle, Hamburg, Hangzhou, Houston, Mallorca,
-   Marrakech, Marseille, Montpellier, Munich, Rotterdam, Stuttgart, Tokyo, Winston-Salem
+   Delray Beach, Doha, Dubai, Eastbourne, Geneva, Gstaad, Halle, Hamburg, Hangzhou, s-Hertogenbosch,
+   Houston, Mallorca, Marrakech, Marseille, Montpellier, Munich, Rotterdam, Stuttgart, Tokyo, Winston-Salem
 
 ====================================================================================================
 SUMMARY
 ====================================================================================================
-Total ATP tournaments in 2025 (through Oct 14): 51
-Tournaments we have: 36 (including ALL 4 Grand Slams + BOTH ATP 500s! 🎾)
-Tournaments missing: 15
-Coverage: 36/51 (70.6%)
+Total ATP tournaments in 2025 (through Oct 14): 49
+Tournaments we have: 37 (including ALL 4 Grand Slams + BOTH ATP 500s! 🎾)
+Tournaments missing: 12
+Coverage: 37/49 (75.5%)
 
-Database Stats (after loading Delray Beach):
-  • Total 2025 matches: ~2,885 (2,858 + 27 Delray Beach)
+Database Stats (after loading s-Hertogenbosch):
+  • Total 2025 matches: ~2,912 (2,885 + 27 s-Hertogenbosch)
   • Grand Slam matches: 258 (all rounds R128 through Finals)
   • Masters 1000 matches: 95 (Indian Wells)
   • ATP 500 matches: 87 (Rio + Washington - COMPLETE!)
-  • ATP 250 matches: 29 tournaments loaded
+  • ATP 250 matches: 30 tournaments loaded
   • Date range: Jan 1 - Sep 29, 2025
 
 PRIORITY FOR REMAINING TOURNAMENTS:
   1. ✅ Grand Slams (4/4) - COMPLETE! 🏆
   2. ✅ ATP 500 (2/2) - COMPLETE! 🏆
   3. Masters 1000 (1/8) - Indian Wells complete! 7 remaining (TOP PRIORITY)
-  4. ATP 250 (29/37) - 8 remaining
+  4. ATP 250 (30/35) - 5 remaining
 
 GRAND SLAM CHAMPIONS 2025:
   🏆 Australian Open: Jannik Sinner def. Alexander Zverev
@@ -100,4 +98,6 @@ NOTABLE ATP 250 CHAMPIONS 2025:
      (Upset: F Cerúndolo def. #1 seed A Zverev in QF)
   🏆 Delray Beach: Miomir Kecmanović def. Alejandro Davidovich Fokina 3-6, 6-1, 7-5
      (Upset: ADF def. #1 seed T Fritz 7-6(4) 7-6(5) in QF)
+  🏆 s-Hertogenbosch: Gabriel Diallo def. Zizou Bergs 7-5, 7-6(10)
+     (Upset: R Opelka def. #1 seed D Medvedev 7-6(5) 7-6(5) in QF)
 ====================================================================================================
