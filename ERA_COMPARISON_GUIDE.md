@@ -141,10 +141,13 @@ Sinner's current form is historically elite!
 | Djokovic | 57.9 | 24 |
 | Nadal | 56.8 | 22 |
 | Federer | 56.3 | 20 |
-| Sinner | 44.3 | 2 (so far) |
-| Alcaraz | 47.6 | 4 (so far) |
+| Alcaraz | 47.6 | 5 (age 22) |
+| Sinner | 44.3 | 4 (age 23) |
 
-**Big 3 still far ahead** - but Sinner/Alcaraz are on pace!
+**Comparison at Same Age:**
+- Alcaraz (22): 5 Slams = Same as Nadal at 22! 🔥
+- Sinner (23): 4 Slams > Djokovic (1) and > Federer (3) at 23
+- **NextGen is AHEAD of Big 3 pace!**
 
 ### ✅ **Method 5: Big Match Performance**
 - **Metric:** Performance vs Top 20 players
@@ -184,9 +187,9 @@ Sinner's current form is historically elite!
 
 ### What We CAN Say:
 1. ✅ **Djokovic is the GOAT** (24 Slams, dominated 3 eras)
-2. ✅ **Sinner/Alcaraz are on GOAT trajectory** (similar dominance to young Big 3)
+2. ✅ **Sinner/Alcaraz are AHEAD of Big 3 pace** (Alcaraz: 5 Slams at 22 = Nadal pace!)
 3. ✅ **Big 3 era had deeper competition** (4 all-time greats at once)
-4. ✅ **NextGen is reaching historic peaks faster** (fewer matches needed)
+4. ✅ **NextGen is reaching historic peaks faster** (fewer matches, more Slams at young age)
 
 ### What We CANNOT Say:
 1. ❌ "Sinner's 3,355 ELO > Federer's 3,264 ELO, therefore Sinner > Federer"
@@ -224,9 +227,9 @@ To determine if NextGen ratings are inflated, we'd need to:
 | Peak Form % | 87.8% | 89.8% | ✅ Yes |
 | Tournament Success | 57.9 | 44.3 | ✅ Yes |
 | Career Matches | 4,263 | 1,240 | ✅ Yes |
-| Grand Slams | 24 | 2 | ✅ Yes |
+| Grand Slams | 24 | 4-5 | ✅ Yes |
 
 ---
 
-**TL;DR:** Don't compare raw ELO across eras. Compare relative dominance, achievements, and consistency. By those metrics, Sinner/Alcaraz are on pace to be all-time greats, but the Big 3 are still the GOATs (for now). 🐐
+**TL;DR:** Don't compare raw ELO across eras. Compare relative dominance, achievements, and consistency. By those metrics, **Alcaraz (5 Slams at 22) and Sinner (4 Slams at 23) are AHEAD of Big 3 pace** and on track to be all-time greats. Djokovic is still the GOAT (24 Slams), but NextGen is coming fast! 🐐⚡
 
