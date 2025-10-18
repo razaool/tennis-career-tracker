@@ -169,9 +169,13 @@ class TennisDataParser:
                 tournament_tier = self.map_tournament_tier(tourney_level, tourney_name)
                 
                 # Parse surface
-                surface = row.get('surface', '').lower()
-                if surface not in SURFACES:
-                    surface = 'hard'  # Default
+                surface_raw = row.get('surface', '')
+                if pd.isna(surface_raw) or not surface_raw:
+                    surface = 'hard'  # Default for missing/NaN
+                else:
+                    surface = str(surface_raw).lower()
+                    if surface not in SURFACES:
+                        surface = 'hard'  # Default
                 
                 # Parse score
                 score = row.get('score', '')
