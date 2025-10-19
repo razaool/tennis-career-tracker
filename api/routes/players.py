@@ -206,6 +206,105 @@ async def get_player(player_name: str):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
+@router.get("/compare/trajectory", response_model=dict)
+async def compare_player_trajectories(
+    players: str = Query(..., description="Comma-separated player names (e.g., 'Carlos Alcaraz,Jannik Sinner')"),
+    start_date: Optional[str] = Query(default=None, description="Start date (YYYY-MM-DD)"),
+    end_date: Optional[str] = Query(default=None, description="End date (YYYY-MM-DD)"),
+    rating_system: str = Query(default="elo", regex="^(elo|tsr|glicko2)$")
+):
+    """
+    Compare multiple players' trajectories over a specific date range
+    
+    - **players**: Comma-separated player names (e.g., "Carlos Alcaraz,Jannik Sinner,Novak Djokovic")
+    - **start_date**: Optional start date (YYYY-MM-DD)
+    - **end_date**: Optional end date (YYYY-MM-DD)
+    - **rating_system**: Rating system to use (elo, tsr, glicko2)
+    
+    Examples:
+    - Compare Alcaraz vs Sinner in 2024-2025
+    - Compare Big 3 from 2010-2015
+    - Compare NextGen from 2023 onwards
+    """
+    
+    # Parse player names
+    player_names = [p.strip() for p in players.split(',')]
+    
+    if len(player_names) > 10:
+        raise HTTPException(status_code=400, detail="Maximum 10 players allowed")
+    
+    # Build column selection based on rating system
+    if rating_system == "elo":
+        rating_col = "elo_rating"
+        extra_cols = ""
+    elif rating_system == "tsr":
+        rating_col = "tsr_rating"
+        extra_cols = ", tsr_uncertainty, tsr_smoothed"
+    else:  # glicko2
+        rating_col = "glicko2_rating"
+        extra_cols = ", glicko2_rd, glicko2_volatility"
+    
+    # Build query with date filters
+    query = f"""
+        SELECT 
+            p.name,
+            pr.career_match_number as match_number,
+            pr.date,
+            pr.{rating_col} as rating
+            {extra_cols}
+        FROM player_ratings pr
+        JOIN players p ON pr.player_id = p.player_id
+        WHERE p.name = ANY(%s)
+            AND pr.{rating_col} IS NOT NULL
+    """
+    
+    params = [player_names]
+    
+    if start_date:
+        query += " AND pr.date >= %s"
+        params.append(start_date)
+    
+    if end_date:
+        query += " AND pr.date <= %s"
+        params.append(end_date)
+    
+    query += " ORDER BY p.name, pr.career_match_number ASC"
+    
+    try:
+        data = Database.execute_query(query, tuple(params))
+        
+        if not data:
+            raise HTTPException(status_code=404, detail="No data found for specified players and date range")
+        
+        # Group by player
+        players_data = {}
+        for row in data:
+            name = row['name']
+            if name not in players_data:
+                players_data[name] = []
+            players_data[name].append(row)
+        
+        return {
+            "rating_system": rating_system,
+            "date_range": {
+                "start": start_date,
+                "end": end_date
+            },
+            "players": [
+                {
+                    "name": name,
+                    "data_points": len(trajectory),
+                    "trajectory": trajectory
+                }
+                for name, trajectory in players_data.items()
+            ]
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
 @router.get("/{player_name}/trajectory", response_model=dict)
 async def get_player_trajectory(
     player_name: str,
