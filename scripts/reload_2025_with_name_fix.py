@@ -16,11 +16,17 @@ from config import DB_CONFIG
 
 # Define tournament files to reload
 TOURNAMENT_FILES = [
-    'data/raw/masters_1000/miami_2025_parsed.csv',
-    'data/raw/masters_1000/monte_carlo_2025_parsed.csv',
-    'data/raw/masters_1000/rome_2025_parsed.csv',
-    'data/raw/masters_1000/cincinnati_2025_parsed.csv',
-    'data/raw/masters_1000/shanghai_2025_parsed.csv',
+    # Grand Slams
+    ('data/raw/grand_slams/ao2025_parsed.csv', 'Grand Slam', 'hard'),
+    ('data/raw/grand_slams/french_open_2025_parsed.csv', 'Grand Slam', 'clay'),
+    ('data/raw/grand_slams/wimbledon_2025_parsed.csv', 'Grand Slam', 'grass'),
+    ('data/raw/grand_slams/us_open_2025_parsed.csv', 'Grand Slam', 'hard'),
+    # Masters 1000
+    ('data/raw/masters_1000/miami_2025_parsed.csv', 'Masters 1000', 'hard'),
+    ('data/raw/masters_1000/monte_carlo_2025_parsed.csv', 'Masters 1000', 'clay'),
+    ('data/raw/masters_1000/rome_2025_parsed.csv', 'Masters 1000', 'clay'),
+    ('data/raw/masters_1000/cincinnati_2025_parsed.csv', 'Masters 1000', 'hard'),
+    ('data/raw/masters_1000/shanghai_2025_parsed.csv', 'Masters 1000', 'hard'),
 ]
 
 
@@ -68,15 +74,16 @@ def normalize_name(abbrev_name, mapping):
     return abbrev_name  # Return as-is if no mapping found
 
 
-def process_and_load_tournament(file_path, name_mapping, player_ids, conn):
+def process_and_load_tournament(file_info, name_mapping, player_ids, conn):
     """Process a tournament CSV and load to database"""
+    file_path, tier, default_surface = file_info
     file_path = Path(file_path)
     
     if not file_path.exists():
         print(f"   ⚠️  File not found: {file_path}")
         return 0
     
-    print(f"\n📂 Processing: {file_path.name}")
+    print(f"\n📂 Processing: {file_path.name} ({tier})")
     
     # Read CSV
     df = pd.read_csv(file_path)
@@ -111,12 +118,9 @@ def process_and_load_tournament(file_path, name_mapping, player_ids, conn):
             
             # Insert match
             try:
-                # Determine surface from tournament name
                 tournament = row['tournament_name']
-                if 'Monte Carlo' in tournament or 'Rome' in tournament or 'Madrid' in tournament:
-                    surface = 'clay'
-                else:
-                    surface = 'hard'
+                surface = default_surface  # Use surface from file_info tuple
+                best_of = 5 if tier == 'Grand Slam' else 3
                 
                 cur.execute("""
                     INSERT INTO matches (
@@ -127,10 +131,10 @@ def process_and_load_tournament(file_path, name_mapping, player_ids, conn):
                 """, (
                     row['date'],
                     tournament,
-                    'Masters 1000',  # All these are Masters
+                    tier,
                     surface,
                     row['round'],
-                    3,  # Best of 3
+                    best_of,
                     player1_id,
                     player2_id,
                     winner_id,
@@ -144,8 +148,10 @@ def process_and_load_tournament(file_path, name_mapping, player_ids, conn):
                 
             except Exception as e:
                 skipped += 1
-                if skipped <= 3:
-                    print(f"   ⚠️  Error loading match: {e}")
+                if skipped <= 5:
+                    print(f"   ⚠️  Error loading match {idx+1}: {e}")
+                    print(f"       Winner: {winner_abbrev} → {winner_full} → ID {winner_id}")
+                    print(f"       Loser: {loser_abbrev} → {loser_full} → ID {loser_id}")
         
         conn.commit()
     
@@ -166,8 +172,8 @@ def main():
         
         # Process each tournament
         total_loaded = 0
-        for file_path in TOURNAMENT_FILES:
-            loaded = process_and_load_tournament(file_path, name_mapping, player_ids, conn)
+        for file_info in TOURNAMENT_FILES:
+            loaded = process_and_load_tournament(file_info, name_mapping, player_ids, conn)
             total_loaded += loaded
         
         print("\n" + "="*70)
