@@ -116,7 +116,7 @@ def export_multiple_players(db, player_names, output_file='big3_comparison.csv')
 
 def export_top_players(db, n=10, output_file='top_players_current.csv'):
     """
-    Export current top N players by ELO rating.
+    Export current top N players by ELO rating (active players only).
     
     Args:
         db: DatabaseManager instance
@@ -124,7 +124,7 @@ def export_top_players(db, n=10, output_file='top_players_current.csv'):
         output_file: Output CSV filename
     """
     with db.get_cursor() as cursor:
-        # Get latest rating for each player
+        # Get latest rating for each player (active players only - last match in 2024 or 2025)
         cursor.execute("""
             WITH latest_ratings AS (
                 SELECT 
@@ -145,6 +145,7 @@ def export_top_players(db, n=10, output_file='top_players_current.csv'):
             JOIN latest_ratings lr ON pr.player_id = lr.player_id 
                 AND pr.career_match_number = lr.max_match
             JOIN players p ON pr.player_id = p.player_id
+            WHERE pr.date >= '2024-01-01'
             ORDER BY pr.elo_rating DESC
             LIMIT %s
         """, (n,))
@@ -215,6 +216,110 @@ def export_surface_comparison(db, player_name, output_file=None):
         return rating
 
 
+def export_rating_system_csvs(db, rating_type='elo'):
+    """
+    Export CSVs for a specific rating system (ELO, TSR, or Glicko-2).
+    
+    Args:
+        db: DatabaseManager instance
+        rating_type: 'elo', 'tsr', or 'glicko2'
+    """
+    # Determine columns and directory based on rating type
+    if rating_type == 'elo':
+        dir_name = 'elo_only'
+        rating_col = 'elo_rating'
+        clay_col = 'elo_clay'
+        grass_col = 'elo_grass'
+        hard_col = 'elo_hard'
+    elif rating_type == 'tsr':
+        dir_name = 'tsr_with_bayesian'
+        rating_col = 'tsr_rating'
+        clay_col = 'elo_clay'  # TSR uses same surface ratings as ELO
+        grass_col = 'elo_grass'
+        hard_col = 'elo_hard'
+    elif rating_type == 'glicko2':
+        dir_name = 'glicko2'
+        rating_col = 'glicko2_rating'
+        clay_col = 'elo_clay'  # Glicko2 doesn't have separate surface ratings
+        grass_col = 'elo_grass'
+        hard_col = 'elo_hard'
+    else:
+        raise ValueError(f"Invalid rating_type: {rating_type}")
+    
+    output_dir = PROCESSED_DATA_DIR / dir_name
+    output_dir.mkdir(exist_ok=True)
+    
+    logger.info(f"\n📊 Exporting {rating_type.upper()} ratings to {dir_name}/...")
+    
+    # Export top 10 current players
+    with db.get_cursor() as cursor:
+        cursor.execute(f"""
+            WITH latest_ratings AS (
+                SELECT 
+                    player_id,
+                    MAX(career_match_number) as max_match
+                FROM player_ratings
+                GROUP BY player_id
+            )
+            SELECT 
+                p.name,
+                pr.{rating_col} as rating,
+                pr.{clay_col} as clay_rating,
+                pr.{grass_col} as grass_rating,
+                pr.{hard_col} as hard_rating,
+                pr.career_match_number as total_matches,
+                pr.date as last_match_date
+            FROM player_ratings pr
+            JOIN latest_ratings lr ON pr.player_id = lr.player_id 
+                AND pr.career_match_number = lr.max_match
+            JOIN players p ON pr.player_id = p.player_id
+            WHERE pr.date >= '2025-01-01' 
+                AND pr.{rating_col} IS NOT NULL
+                AND pr.career_match_number >= 100
+            ORDER BY pr.{rating_col} DESC
+            LIMIT 10
+        """)
+        
+        top_players = cursor.fetchall()
+        output_path = output_dir / 'top10_current.csv'
+        with open(output_path, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=top_players[0].keys())
+            writer.writeheader()
+            writer.writerows(top_players)
+        logger.info(f"  ✅ {output_path}")
+    
+    # Export individual player trajectories
+    players_to_export = ['Novak Djokovic', 'Rafael Nadal', 'Roger Federer', 
+                         'Carlos Alcaraz', 'Jannik Sinner']
+    
+    for player in players_to_export:
+        with db.get_cursor() as cursor:
+            cursor.execute(f"""
+                SELECT 
+                    p.name,
+                    pr.career_match_number,
+                    pr.date,
+                    pr.{rating_col} as rating,
+                    pr.{clay_col} as clay_rating,
+                    pr.{grass_col} as grass_rating,
+                    pr.{hard_col} as hard_rating
+                FROM player_ratings pr
+                JOIN players p ON pr.player_id = p.player_id
+                WHERE p.name = %s AND pr.{rating_col} IS NOT NULL
+                ORDER BY pr.career_match_number
+            """, (player,))
+            
+            ratings = cursor.fetchall()
+            if ratings:
+                safe_name = player.lower().replace(' ', '_')
+                output_path = output_dir / f'{safe_name}_career.csv'
+                with open(output_path, 'w', newline='') as f:
+                    writer = csv.DictWriter(f, fieldnames=ratings[0].keys())
+                    writer.writeheader()
+                    writer.writerows(ratings)
+                logger.info(f"  ✅ {output_path}")
+
+
 def main():
     """Main execution - export common visualizations"""
     logger.info("=" * 70)
@@ -273,15 +378,29 @@ def main():
             f'{safe_name}_surfaces.csv'
         )
     
+    # 7. Export separate CSV files for each rating system
+    logger.info("\n" + "=" * 70)
+    logger.info("EXPORTING RATING SYSTEM-SPECIFIC CSVs")
+    logger.info("=" * 70)
+    
+    export_rating_system_csvs(db, rating_type='elo')
+    export_rating_system_csvs(db, rating_type='tsr')
+    export_rating_system_csvs(db, rating_type='glicko2')
+    
     logger.info("\n" + "=" * 70)
     logger.info("✅ EXPORT COMPLETE!")
     logger.info("=" * 70)
     logger.info(f"\nAll files saved to: {PROCESSED_DATA_DIR}")
+    logger.info("\nRating-specific CSVs in:")
+    logger.info(f"  - {PROCESSED_DATA_DIR}/elo_only/")
+    logger.info(f"  - {PROCESSED_DATA_DIR}/tsr_with_bayesian/")
+    logger.info(f"  - {PROCESSED_DATA_DIR}/glicko2/")
     logger.info("\nYou can now:")
     logger.info("  1. Load these CSVs in Python/R for visualization")
     logger.info("  2. Import into Excel/Google Sheets")
     logger.info("  3. Use with Plotly/D3.js for interactive charts")
     logger.info("  4. Build your DARKO-style career progression charts!")
+    logger.info("  5. Compare rating systems side-by-side!")
 
 
 if __name__ == "__main__":
