@@ -77,13 +77,15 @@ async def get_current_rankings(
 @router.get("/surface/{surface}", response_model=dict)
 async def get_surface_rankings(
     surface: str,
-    limit: int = Query(default=100, le=500)
+    limit: int = Query(default=100, le=500),
+    active_only: bool = Query(default=True, description="Filter to active players only (played in 2025)")
 ):
     """
     Get rankings for specific surface (clay, grass, hard)
     
     - **surface**: Surface type (clay, grass, hard)
     - **limit**: Number of players to return (max 500)
+    - **active_only**: Show only active players (played in 2025) - default: True
     
     Returns top players by surface-specific ELO rating
     """
@@ -94,6 +96,9 @@ async def get_surface_rankings(
     
     # Map surface to column name
     surface_column = f"elo_{surface}"
+    
+    # Build query with optional active filter
+    date_filter = "AND pr.date >= '2025-01-01'" if active_only else ""
     
     query = f"""
         WITH latest_ratings AS (
@@ -115,7 +120,7 @@ async def get_surface_rankings(
             AND pr.career_match_number = lr.max_match
         JOIN players p ON pr.player_id = p.player_id
         WHERE pr.{surface_column} IS NOT NULL
-            AND pr.date >= '2024-01-01'
+            {date_filter}
         ORDER BY pr.{surface_column} DESC
         LIMIT %s
     """
@@ -125,6 +130,7 @@ async def get_surface_rankings(
         
         return {
             "surface": surface,
+            "active_only": active_only,
             "total_ranked": len(rankings),
             "rankings": rankings
         }
