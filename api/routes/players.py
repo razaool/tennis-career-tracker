@@ -206,6 +206,81 @@ async def get_player(player_name: str):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
+@router.get("/{player_name}/titles", response_model=dict)
+async def get_player_titles(player_name: str):
+    """
+    Get all tournament titles won by player, organized by tier
+    
+    - **player_name**: Player name (URL-encoded)
+    
+    Returns titles by tier with tournament details
+    """
+    
+    # Decode name
+    player_name = player_name.replace("%20", " ").replace("+", " ")
+    
+    query = """
+        SELECT 
+            m.date,
+            m.tournament_name,
+            m.tournament_tier,
+            m.surface,
+            p_opp.name as defeated_in_final,
+            m.score
+        FROM matches m
+        JOIN players p ON m.winner_id = p.player_id
+        JOIN players p_opp ON (CASE WHEN m.player1_id = p.player_id THEN m.player2_id ELSE m.player1_id END) = p_opp.player_id
+        WHERE p.name = %s
+            AND m.round = 'F'
+        ORDER BY m.date DESC
+    """
+    
+    try:
+        titles = Database.execute_query(query, (player_name,))
+        
+        if not titles:
+            return {
+                "player": player_name,
+                "total_titles": 0,
+                "by_tier": {},
+                "by_surface": {},
+                "titles": []
+            }
+        
+        # Group by tier
+        by_tier = {}
+        by_surface = {}
+        
+        for title in titles:
+            tier = title['tournament_tier'] or 'Other'
+            surf = title['surface'] or 'Unknown'
+            
+            if tier not in by_tier:
+                by_tier[tier] = []
+            by_tier[tier].append(title)
+            
+            if surf not in by_surface:
+                by_surface[surf] = []
+            by_surface[surf].append(title)
+        
+        # Count by tier
+        tier_counts = {tier: len(titles_list) for tier, titles_list in by_tier.items()}
+        surface_counts = {surf: len(titles_list) for surf, titles_list in by_surface.items()}
+        
+        return {
+            "player": player_name,
+            "total_titles": len(titles),
+            "by_tier": tier_counts,
+            "by_surface": surface_counts,
+            "titles": titles
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
 @router.get("/compare/trajectory", response_model=dict)
 async def compare_player_trajectories(
     players: str = Query(..., description="Comma-separated player names (e.g., 'Carlos Alcaraz,Jannik Sinner')"),
@@ -305,6 +380,81 @@ async def compare_player_trajectories(
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
+@router.get("/{player_name}/titles", response_model=dict)
+async def get_player_titles(player_name: str):
+    """
+    Get all tournament titles won by player, organized by tier
+    
+    - **player_name**: Player name (URL-encoded)
+    
+    Returns titles by tier with tournament details
+    """
+    
+    # Decode name
+    player_name = player_name.replace("%20", " ").replace("+", " ")
+    
+    query = """
+        SELECT 
+            m.date,
+            m.tournament_name,
+            m.tournament_tier,
+            m.surface,
+            p_opp.name as defeated_in_final,
+            m.score
+        FROM matches m
+        JOIN players p ON m.winner_id = p.player_id
+        JOIN players p_opp ON (CASE WHEN m.player1_id = p.player_id THEN m.player2_id ELSE m.player1_id END) = p_opp.player_id
+        WHERE p.name = %s
+            AND m.round = 'F'
+        ORDER BY m.date DESC
+    """
+    
+    try:
+        titles = Database.execute_query(query, (player_name,))
+        
+        if not titles:
+            return {
+                "player": player_name,
+                "total_titles": 0,
+                "by_tier": {},
+                "by_surface": {},
+                "titles": []
+            }
+        
+        # Group by tier
+        by_tier = {}
+        by_surface = {}
+        
+        for title in titles:
+            tier = title['tournament_tier'] or 'Other'
+            surf = title['surface'] or 'Unknown'
+            
+            if tier not in by_tier:
+                by_tier[tier] = []
+            by_tier[tier].append(title)
+            
+            if surf not in by_surface:
+                by_surface[surf] = []
+            by_surface[surf].append(title)
+        
+        # Count by tier
+        tier_counts = {tier: len(titles_list) for tier, titles_list in by_tier.items()}
+        surface_counts = {surf: len(titles_list) for surf, titles_list in by_surface.items()}
+        
+        return {
+            "player": player_name,
+            "total_titles": len(titles),
+            "by_tier": tier_counts,
+            "by_surface": surface_counts,
+            "titles": titles
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
 @router.get("/{player_name}/trajectory", response_model=dict)
 async def get_player_trajectory(
     player_name: str,
@@ -359,6 +509,237 @@ async def get_player_trajectory(
             "total_matches": len(trajectory),
             "data_points": trajectory
         }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@router.get("/{player_name}/titles", response_model=dict)
+async def get_player_titles(player_name: str):
+    """
+    Get all tournament titles won by player, organized by tier
+    
+    - **player_name**: Player name (URL-encoded)
+    
+    Returns titles by tier with tournament details
+    """
+    
+    # Decode name
+    player_name = player_name.replace("%20", " ").replace("+", " ")
+    
+    query = """
+        SELECT 
+            m.date,
+            m.tournament_name,
+            m.tournament_tier,
+            m.surface,
+            p_opp.name as defeated_in_final,
+            m.score
+        FROM matches m
+        JOIN players p ON m.winner_id = p.player_id
+        JOIN players p_opp ON (CASE WHEN m.player1_id = p.player_id THEN m.player2_id ELSE m.player1_id END) = p_opp.player_id
+        WHERE p.name = %s
+            AND m.round = 'F'
+        ORDER BY m.date DESC
+    """
+    
+    try:
+        titles = Database.execute_query(query, (player_name,))
+        
+        if not titles:
+            return {
+                "player": player_name,
+                "total_titles": 0,
+                "by_tier": {},
+                "by_surface": {},
+                "titles": []
+            }
+        
+        # Group by tier
+        by_tier = {}
+        by_surface = {}
+        
+        for title in titles:
+            tier = title['tournament_tier'] or 'Other'
+            surf = title['surface'] or 'Unknown'
+            
+            if tier not in by_tier:
+                by_tier[tier] = []
+            by_tier[tier].append(title)
+            
+            if surf not in by_surface:
+                by_surface[surf] = []
+            by_surface[surf].append(title)
+        
+        # Count by tier
+        tier_counts = {tier: len(titles_list) for tier, titles_list in by_tier.items()}
+        surface_counts = {surf: len(titles_list) for surf, titles_list in by_surface.items()}
+        
+        return {
+            "player": player_name,
+            "total_titles": len(titles),
+            "by_tier": tier_counts,
+            "by_surface": surface_counts,
+            "titles": titles
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@router.get("/{player_name}/recent", response_model=dict)
+async def get_recent_matches(
+    player_name: str,
+    limit: int = Query(default=20, le=100, description="Number of recent matches")
+):
+    """
+    Get player's most recent matches
+    
+    - **player_name**: Player name (URL-encoded)
+    - **limit**: Number of recent matches (max 100)
+    
+    Returns recent match results with opponents, tournaments, scores
+    """
+    
+    # Decode name
+    player_name = player_name.replace("%20", " ").replace("+", " ")
+    
+    query = """
+        WITH player_matches AS (
+            SELECT 
+                m.date,
+                m.tournament_name,
+                m.tournament_tier,
+                m.surface,
+                m.round,
+                m.score,
+                CASE 
+                    WHEN m.winner_id = p.player_id THEN 'Won'
+                    ELSE 'Lost'
+                END as result,
+                CASE 
+                    WHEN m.player1_id = p.player_id THEN p2.name
+                    ELSE p1.name
+                END as opponent,
+                pr.elo_rating as player_elo,
+                CASE 
+                    WHEN m.player1_id = p.player_id THEN pr2.elo_rating
+                    ELSE pr1.elo_rating
+                END as opponent_elo
+            FROM matches m
+            JOIN players p ON (p.player_id = m.player1_id OR p.player_id = m.player2_id)
+            LEFT JOIN players p1 ON m.player1_id = p1.player_id
+            LEFT JOIN players p2 ON m.player2_id = p2.player_id
+            LEFT JOIN player_ratings pr ON pr.match_id = m.match_id AND pr.player_id = p.player_id
+            LEFT JOIN player_ratings pr1 ON pr1.match_id = m.match_id AND pr1.player_id = m.player1_id
+            LEFT JOIN player_ratings pr2 ON pr2.match_id = m.match_id AND pr2.player_id = m.player2_id
+            WHERE p.name = %s
+            ORDER BY m.date DESC
+            LIMIT %s
+        )
+        SELECT * FROM player_matches
+    """
+    
+    try:
+        matches = Database.execute_query(query, (player_name, limit))
+        
+        if not matches:
+            raise HTTPException(status_code=404, detail=f"No matches found for player '{player_name}'")
+        
+        # Calculate summary stats
+        wins = sum(1 for m in matches if m['result'] == 'Won')
+        losses = len(matches) - wins
+        win_pct = (wins / len(matches)) * 100 if matches else 0
+        
+        return {
+            "player": player_name,
+            "matches_shown": len(matches),
+            "summary": {
+                "wins": wins,
+                "losses": losses,
+                "win_percentage": round(win_pct, 1)
+            },
+            "matches": matches
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@router.get("/{player_name}/titles", response_model=dict)
+async def get_player_titles(player_name: str):
+    """
+    Get all tournament titles won by player, organized by tier
+    
+    - **player_name**: Player name (URL-encoded)
+    
+    Returns titles by tier with tournament details
+    """
+    
+    # Decode name
+    player_name = player_name.replace("%20", " ").replace("+", " ")
+    
+    query = """
+        SELECT 
+            m.date,
+            m.tournament_name,
+            m.tournament_tier,
+            m.surface,
+            p_opp.name as defeated_in_final,
+            m.score
+        FROM matches m
+        JOIN players p ON m.winner_id = p.player_id
+        JOIN players p_opp ON (CASE WHEN m.player1_id = p.player_id THEN m.player2_id ELSE m.player1_id END) = p_opp.player_id
+        WHERE p.name = %s
+            AND m.round = 'F'
+        ORDER BY m.date DESC
+    """
+    
+    try:
+        titles = Database.execute_query(query, (player_name,))
+        
+        if not titles:
+            return {
+                "player": player_name,
+                "total_titles": 0,
+                "by_tier": {},
+                "by_surface": {},
+                "titles": []
+            }
+        
+        # Group by tier
+        by_tier = {}
+        by_surface = {}
+        
+        for title in titles:
+            tier = title['tournament_tier'] or 'Other'
+            surf = title['surface'] or 'Unknown'
+            
+            if tier not in by_tier:
+                by_tier[tier] = []
+            by_tier[tier].append(title)
+            
+            if surf not in by_surface:
+                by_surface[surf] = []
+            by_surface[surf].append(title)
+        
+        # Count by tier
+        tier_counts = {tier: len(titles_list) for tier, titles_list in by_tier.items()}
+        surface_counts = {surf: len(titles_list) for surf, titles_list in by_surface.items()}
+        
+        return {
+            "player": player_name,
+            "total_titles": len(titles),
+            "by_tier": tier_counts,
+            "by_surface": surface_counts,
+            "titles": titles
+        }
+        
     except HTTPException:
         raise
     except Exception as e:

@@ -73,3 +73,127 @@ async def get_current_rankings(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
+
+@router.get("/surface/{surface}", response_model=dict)
+async def get_surface_rankings(
+    surface: str,
+    limit: int = Query(default=100, le=500)
+):
+    """
+    Get rankings for specific surface (clay, grass, hard)
+    
+    - **surface**: Surface type (clay, grass, hard)
+    - **limit**: Number of players to return (max 500)
+    
+    Returns top players by surface-specific ELO rating
+    """
+    
+    # Validate surface
+    if surface not in ['clay', 'grass', 'hard']:
+        raise HTTPException(status_code=400, detail="Surface must be: clay, grass, or hard")
+    
+    # Map surface to column name
+    surface_column = f"elo_{surface}"
+    
+    query = f"""
+        WITH latest_ratings AS (
+            SELECT 
+                player_id,
+                MAX(career_match_number) as max_match
+            FROM player_ratings
+            GROUP BY player_id
+        )
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY pr.{surface_column} DESC) as rank,
+            p.name,
+            pr.{surface_column} as surface_rating,
+            pr.elo_rating as overall_elo,
+            pr.career_match_number as total_matches,
+            pr.date as last_match
+        FROM player_ratings pr
+        JOIN latest_ratings lr ON pr.player_id = lr.player_id 
+            AND pr.career_match_number = lr.max_match
+        JOIN players p ON pr.player_id = p.player_id
+        WHERE pr.{surface_column} IS NOT NULL
+            AND pr.date >= '2024-01-01'
+        ORDER BY pr.{surface_column} DESC
+        LIMIT %s
+    """
+    
+    try:
+        rankings = Database.execute_query(query, (limit,))
+        
+        return {
+            "surface": surface,
+            "total_ranked": len(rankings),
+            "rankings": rankings
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@router.get("/historical", response_model=dict)
+async def get_historical_rankings(
+    date: str = Query(..., description="Date in YYYY-MM-DD format"),
+    limit: int = Query(default=10, le=100),
+    rating_system: str = Query(default="elo", regex="^(elo|tsr|glicko2)$")
+):
+    """
+    Get rankings at a specific historical date
+    
+    - **date**: Date in YYYY-MM-DD format (e.g., "2010-01-01")
+    - **limit**: Number of players (max 100)
+    - **rating_system**: Rating system (elo, tsr, glicko2)
+    
+    Returns: Top N players as of that date
+    """
+    
+    # Select rating column
+    rating_col = {
+        "elo": "elo_rating",
+        "tsr": "tsr_rating",
+        "glicko2": "glicko2_rating"
+    }.get(rating_system, "elo_rating")
+    
+    query = f"""
+        WITH ratings_on_date AS (
+            SELECT 
+                pr.player_id,
+                pr.{rating_col} as rating,
+                pr.career_match_number,
+                pr.date,
+                ROW_NUMBER() OVER (PARTITION BY pr.player_id ORDER BY pr.date DESC, pr.career_match_number DESC) as rn
+            FROM player_ratings pr
+            WHERE pr.date <= %s
+                AND pr.{rating_col} IS NOT NULL
+        )
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY rod.rating DESC) as rank,
+            p.name,
+            rod.rating,
+            rod.date as last_match_before_date,
+            rod.career_match_number as total_matches
+        FROM ratings_on_date rod
+        JOIN players p ON rod.player_id = p.player_id
+        WHERE rod.rn = 1
+        ORDER BY rod.rating DESC
+        LIMIT %s
+    """
+    
+    try:
+        rankings = Database.execute_query(query, (date, limit))
+        
+        if not rankings:
+            raise HTTPException(status_code=404, detail=f"No rating data available for date: {date}")
+        
+        return {
+            "date": date,
+            "rating_system": rating_system,
+            "total_ranked": len(rankings),
+            "rankings": rankings
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+

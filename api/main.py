@@ -10,7 +10,7 @@ from .config import settings
 from .database import Database
 
 # Import routes
-from .routes import players, rankings, dashboard, predict
+from .routes import players, rankings, dashboard, predict, h2h
 # from .routes import compare, analysis
 
 
@@ -113,6 +113,7 @@ app.include_router(players.router, prefix="/api/players", tags=["Players"])
 app.include_router(rankings.router, prefix="/api/rankings", tags=["Rankings"])
 app.include_router(dashboard.router, prefix="/api/dashboard", tags=["Dashboard"])
 app.include_router(predict.router, prefix="/api/predict", tags=["Prediction"])
+app.include_router(h2h.router, prefix="/api/h2h", tags=["Head-to-Head"])
 # app.include_router(compare.router, prefix="/api/compare", tags=["Comparison"])
 # app.include_router(analysis.router, prefix="/api/analysis", tags=["Analysis"])
 
