@@ -89,8 +89,8 @@ def calculate_big_match_rating(
     Returns:
         Big match rating contribution
     """
-    # Only count matches against elite opponents (ELO >= 2500)
-    if opponent_elo < 2500:
+    # Only count matches against elite opponents (ELO >= 2300)
+    if opponent_elo < 2300:
         return None  # Not a "big match"
     
     # Expected score based on ELO difference

@@ -85,7 +85,7 @@ for player_id in all_player_ids:
         form_index = (sum(recent_results) / len(recent_results)) * 100.0
         
         # 2. Big Match Rating
-        if opponent_elo >= 2500:
+        if opponent_elo >= 2300:
             expected = 1.0 / (1.0 + 10 ** ((opponent_elo - player_elo) / 400.0))
             actual = 1.0 if won else 0.0
             big_match_results.append((actual - expected) * 100)

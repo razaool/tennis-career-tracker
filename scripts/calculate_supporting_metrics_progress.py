@@ -94,7 +94,7 @@ def calculate_supporting_metrics_with_progress():
             form_index = (sum(recent_results) / len(recent_results)) * 100.0 if recent_results else 50.0
             
             # Big Match Rating
-            if opponent_elo >= 2500:
+            if opponent_elo >= 2300:
                 expected = 1.0 / (1.0 + 10 ** ((opponent_elo - match['player_elo']) / 400.0))
                 actual = 1.0 if won else 0.0
                 big_match_results.append((actual - expected) * 100)

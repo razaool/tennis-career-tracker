@@ -93,7 +93,7 @@ for i in range(0, total_players, chunk_size):
                 JOIN player_ratings pr2 ON pr2.match_id = m.match_id AND pr2.player_id != pr1.player_id
                 WHERE pr1.tsr_rating IS NOT NULL
                     AND pr1.player_id = ANY(%s)
-                    AND pr2.elo_rating >= 2500
+                    AND pr2.elo_rating >= 2300
             )
             UPDATE player_ratings pr
             SET big_match_rating = subq.big_match_rating

@@ -38,7 +38,7 @@ def calculate_form_index(recent_results: list) -> float:
 
 def calculate_big_match_rating(player_elo: float, opponent_elo: float, won: bool) -> float:
     """Calculate big match performance."""
-    if opponent_elo < 2500:
+    if opponent_elo < 2300:
         return None  # Not a big match
     
     # Expected score
