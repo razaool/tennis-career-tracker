@@ -105,13 +105,13 @@ async def predict_match(
         if abs(form_diff) > 10:
             # Form matters: adjust by up to 5% based on form difference
             form_adjustment = (form_diff / 200)  # ±0.05 max
-            final_prob = adjusted_prob + form_adjustment
-            final_prob = max(0.05, min(0.95, final_prob))  # Clamp between 5-95%
+            unclamped_prob = adjusted_prob + form_adjustment
+            final_prob = max(0.05, min(0.95, unclamped_prob))  # Clamp between 5-95%
         else:
             final_prob = adjusted_prob
         
         # Determine confidence based on rating uncertainty
-        avg_uncertainty = (p1_data['tsr_uncertainty'] or 150 + p2_data['tsr_uncertainty'] or 150) / 2
+        avg_uncertainty = ((p1_data['tsr_uncertainty'] or 150) + (p2_data['tsr_uncertainty'] or 150)) / 2
         if avg_uncertainty < 120:
             confidence = "high"
         elif avg_uncertainty < 160:
@@ -163,8 +163,9 @@ async def predict_match(
                 "base_probability": round(base_prob * 100, 1),
                 "surface_adjusted": round(adjusted_prob * 100, 1),
                 "form_adjusted": round(final_prob * 100, 1),
+                "clamped": abs(form_diff) > 10 and (unclamped_prob > 0.95 or unclamped_prob < 0.05)
             },
-            "note": "MVP prediction using ELO and form. Future versions will incorporate match statistics, head-to-head records, and tournament context."
+            "note": "MVP prediction using ELO, surface performance, and recent form. Probabilities are clamped to 5-95% range to account for uncertainty."
         }
         
     except HTTPException:
