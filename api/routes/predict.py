@@ -31,49 +31,45 @@ async def predict_match(
     Returns win probabilities and breakdown of factors
     """
     
-    # Get both players' data
+    # Get both players' data with surface-specific win rates
     query = """
+        WITH surface_performance AS (
+            SELECT 
+                pr.player_id,
+                COUNT(*) as surface_matches,
+                SUM(CASE WHEN m.winner_id = pr.player_id THEN 1 ELSE 0 END) as surface_wins,
+                AVG(pr.elo_rating) as avg_surface_elo
+            FROM player_ratings pr
+            JOIN matches m ON pr.match_id = m.match_id
+            WHERE m.surface = %s
+              AND pr.date >= CURRENT_DATE - INTERVAL '2 years'
+            GROUP BY pr.player_id
+            HAVING COUNT(*) >= 5  -- At least 5 matches on surface
+        )
         SELECT 
             p.name,
             p.player_id,
             plr.elo_rating,
             CASE 
-                WHEN %s = 'clay' THEN pr_clay.clay_rating
-                WHEN %s = 'grass' THEN pr_grass.grass_rating
-                WHEN %s = 'hard' THEN pr_hard.hard_rating
-                ELSE plr.elo_rating
+                WHEN sp.surface_matches >= 5 THEN
+                    -- Adjust ELO based on surface win rate
+                    plr.elo_rating + ((sp.surface_wins::float / sp.surface_matches - 0.5) * 100)
+                ELSE
+                    plr.elo_rating
             END as surface_elo,
+            sp.surface_matches,
+            sp.surface_wins,
             plr.form_index,
             plr.big_match_rating,
             plr.tsr_uncertainty
         FROM players p
         INNER JOIN player_latest_ratings plr ON p.player_id = plr.player_id
-        LEFT JOIN LATERAL (
-            SELECT clay_rating
-            FROM player_ratings
-            WHERE player_id = p.player_id AND clay_rating IS NOT NULL
-            ORDER BY date DESC
-            LIMIT 1
-        ) pr_clay ON true
-        LEFT JOIN LATERAL (
-            SELECT grass_rating
-            FROM player_ratings
-            WHERE player_id = p.player_id AND grass_rating IS NOT NULL
-            ORDER BY date DESC
-            LIMIT 1
-        ) pr_grass ON true
-        LEFT JOIN LATERAL (
-            SELECT hard_rating
-            FROM player_ratings
-            WHERE player_id = p.player_id AND hard_rating IS NOT NULL
-            ORDER BY date DESC
-            LIMIT 1
-        ) pr_hard ON true
+        LEFT JOIN surface_performance sp ON p.player_id = sp.player_id
         WHERE p.name IN (%s, %s)
     """
     
     try:
-        players = Database.execute_query(query, (surface, surface, surface, player1, player2))
+        players = Database.execute_query(query, (surface, player1, player2))
         
         if len(players) < 2:
             raise HTTPException(
@@ -139,6 +135,7 @@ async def predict_match(
                 "name": p1_data['name'],
                 "current_elo": round(p1_data['elo_rating'], 1),
                 "surface_elo": round(p1_data['surface_elo'] or p1_data['elo_rating'], 1),
+                "surface_record": f"{p1_data['surface_wins'] or 0}-{(p1_data['surface_matches'] or 0) - (p1_data['surface_wins'] or 0)}" if p1_data.get('surface_matches') else "Limited data",
                 "form": round(form1, 1),
                 "big_match_rating": round(p1_data['big_match_rating'], 2) if p1_data['big_match_rating'] else None
             },
@@ -146,6 +143,7 @@ async def predict_match(
                 "name": p2_data['name'],
                 "current_elo": round(p2_data['elo_rating'], 1),
                 "surface_elo": round(p2_data['surface_elo'] or p2_data['elo_rating'], 1),
+                "surface_record": f"{p2_data['surface_wins'] or 0}-{(p2_data['surface_matches'] or 0) - (p2_data['surface_wins'] or 0)}" if p2_data.get('surface_matches') else "Limited data",
                 "form": round(form2, 1),
                 "big_match_rating": round(p2_data['big_match_rating'], 2) if p2_data['big_match_rating'] else None
             },
