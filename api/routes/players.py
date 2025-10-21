@@ -28,14 +28,34 @@ async def list_players(
     - **sort_by**: Sort field (elo, name, matches)
     """
     
-    # Fast query using materialized view
+    # Fast query using materialized view with actual stats
     query = """
+        WITH player_stats AS (
+            SELECT 
+                pr.player_id,
+                COUNT(DISTINCT pr.match_id) as total_matches,
+                COUNT(DISTINCT CASE 
+                    WHEN m.tournament_tier = 'Grand Slam' 
+                    THEN pr.match_id 
+                END) as gs_matches
+            FROM player_ratings pr
+            JOIN matches m ON pr.match_id = m.match_id
+            GROUP BY pr.player_id
+        ),
+        peak_elos AS (
+            SELECT 
+                player_id,
+                MAX(elo_rating) as peak_elo
+            FROM player_ratings
+            WHERE elo_rating IS NOT NULL
+            GROUP BY player_id
+        )
         SELECT 
             p.name,
             plr.elo_rating as current_elo,
-            plr.elo_rating as peak_elo,  -- Simplified for now
-            0 as career_matches,  -- Simplified for now
-            0 as grand_slams,
+            COALESCE(pe.peak_elo, plr.elo_rating) as peak_elo,
+            COALESCE(ps.total_matches, 0) as career_matches,
+            COALESCE(ps.gs_matches, 0) as grand_slams,
             CASE 
                 WHEN plr.last_match >= CURRENT_DATE - INTERVAL '6 months' 
                 THEN true 
@@ -44,6 +64,8 @@ async def list_players(
             plr.last_match
         FROM players p
         INNER JOIN player_latest_ratings plr ON p.player_id = plr.player_id
+        LEFT JOIN player_stats ps ON p.player_id = ps.player_id
+        LEFT JOIN peak_elos pe ON p.player_id = pe.player_id
         WHERE 1=1
     """
     

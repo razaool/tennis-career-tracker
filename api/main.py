@@ -3,7 +3,8 @@ Tennis Career Tracker API - Main Application
 """
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.openapi.docs import get_swagger_ui_html
 import time
 
 from .config import settings
@@ -19,7 +20,7 @@ app = FastAPI(
     title=settings.API_TITLE,
     version=settings.API_VERSION,
     description=settings.API_DESCRIPTION,
-    docs_url="/docs",
+    docs_url=None,  # Disable default docs to use custom
     redoc_url="/redoc",
     openapi_url="/openapi.json"
 )
@@ -44,6 +45,77 @@ async def add_process_time_header(request: Request, call_next):
     process_time = time.time() - start_time
     response.headers["X-Process-Time"] = f"{process_time:.3f}s"
     return response
+
+
+# Custom dark mode docs
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui_html():
+    """Custom Swagger UI with dark mode"""
+    return HTMLResponse(f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{app.title} - API Docs</title>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css">
+        <style>
+            /* Dark Mode CSS */
+            body {{
+                background-color: #1a1a1a;
+                margin: 0;
+                padding: 0;
+            }}
+            
+            .swagger-ui {{
+                filter: invert(88%) hue-rotate(180deg);
+            }}
+            
+            .swagger-ui .scheme-container {{
+                background: #252525;
+                box-shadow: 0 1px 2px 0 rgba(255,255,255,.15);
+            }}
+            
+            .swagger-ui .opblock .opblock-summary-description,
+            .swagger-ui .opblock .opblock-summary-operation-id,
+            .swagger-ui .opblock .opblock-summary-path,
+            .swagger-ui .opblock .opblock-summary-path__deprecated {{
+                filter: invert(100%) hue-rotate(180deg);
+            }}
+            
+            .swagger-ui .info .title small pre,
+            .swagger-ui .info .title small,
+            .swagger-ui .info .title {{
+                filter: invert(100%) hue-rotate(180deg);
+            }}
+            
+            .swagger-ui img {{
+                filter: invert(100%) hue-rotate(180deg);
+            }}
+        </style>
+    </head>
+    <body>
+        <div id="swagger-ui"></div>
+        <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+        <script>
+            window.onload = function() {{
+                window.ui = SwaggerUIBundle({{
+                    url: '{app.openapi_url}',
+                    dom_id: '#swagger-ui',
+                    deepLinking: true,
+                    presets: [
+                        SwaggerUIBundle.presets.apis,
+                        SwaggerUIBundle.SwaggerUIStandalonePreset
+                    ],
+                    layout: "BaseLayout",
+                    syntaxHighlight: {{
+                        theme: "monokai"
+                    }}
+                }});
+            }};
+        </script>
+    </body>
+    </html>
+    """)
 
 
 # Root endpoint
