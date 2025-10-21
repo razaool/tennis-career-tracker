@@ -124,6 +124,15 @@ async def get_player(player_name: str):
             SELECT COUNT(*) as total_matches
             FROM player_ratings
             WHERE player_id = (SELECT player_id FROM player_info)
+        ),
+        win_loss_stats AS (
+            SELECT 
+                COUNT(*) as total_matches,
+                SUM(CASE WHEN m.winner_id = pi.player_id THEN 1 ELSE 0 END) as wins,
+                SUM(CASE WHEN m.winner_id != pi.player_id THEN 1 ELSE 0 END) as losses
+            FROM player_ratings pr
+            JOIN matches m ON pr.match_id = m.match_id
+            JOIN player_info pi ON pi.player_id = pr.player_id
         )
         SELECT 
             p.name,
@@ -146,14 +155,14 @@ async def get_player(player_name: str):
             plr.form_index,
             plr.big_match_rating,
             plr.tournament_success_score,
-            mc.total_matches,
-            0 as wins,
-            0 as losses
+            wls.total_matches,
+            wls.wins,
+            wls.losses
         FROM players p
         JOIN player_info pi ON true
         LEFT JOIN player_latest_ratings plr ON plr.player_id = pi.player_id
         LEFT JOIN peak_ratings pr ON true
-        LEFT JOIN match_count mc ON true
+        LEFT JOIN win_loss_stats wls ON true
         WHERE p.player_id = pi.player_id
     """
     
@@ -163,9 +172,10 @@ async def get_player(player_name: str):
         if not player:
             raise HTTPException(status_code=404, detail=f"Player '{player_name}' not found")
         
-        # Calculate win percentage (simplified)
+        # Calculate win percentage
         total = player['total_matches'] or 0
-        win_pct = 0.0  # We'll calculate this properly later
+        wins = player['wins'] or 0
+        win_pct = (wins / total * 100) if total > 0 else 0.0
         
         # Format response
         return {
