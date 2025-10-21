@@ -2,16 +2,20 @@
 """
 Calculate Bayesian hierarchical ratings (TSR - Tennis Skill Rating).
 
-TSR = ELO + Uncertainty Estimates
+TSR = ELO + Bayesian Adjustment (Experience & Confidence)
 
 Strategy:
-1. Use existing ELO ratings as TSR (already accounts for opponent quality & tournaments)
+1. Start with proven ELO ratings (accounts for opponent quality & tournaments)
 2. Calculate uncertainty (Rating Deviation) based on:
    - Number of matches played (experience)
    - Recency of activity (rust factor)
    - ELO volatility (consistency)
+3. Apply Bayesian adjustment to TSR rating:
+   - More experienced players with lower uncertainty → TSR closer to ELO
+   - Less experienced players with high uncertainty → More conservative TSR
+   - Adjustment range: -25 to +25 points based on experience and confidence
 
-This leverages our proven ELO system while adding Bayesian uncertainty estimates.
+This creates a more sophisticated rating that accounts for sample size and reliability.
 """
 
 import logging
@@ -184,10 +188,24 @@ def calculate_bayesian_ratings():
         grass_uncertainty = uncertainty * surface_uncertainty_factor * 1.3  # Grass has least matches
         hard_uncertainty = uncertainty * surface_uncertainty_factor * 0.9  # Hard has most matches
         
+        # Calculate proper TSR rating with Bayesian adjustment
+        # TSR = ELO adjusted by confidence and experience
+        experience_factor = min(match_num / 100.0, 1.0)  # 0-1 based on experience
+        confidence = max(0.7, 1.0 - (uncertainty / 400.0))  # Convert uncertainty to confidence (0.7-1.0)
+        
+        # Bayesian TSR: ELO adjusted by experience and confidence
+        # More experienced players with lower uncertainty get ratings closer to ELO
+        # Less experienced players with high uncertainty get more conservative ratings
+        tsr_adjustment = (experience_factor * confidence - 0.5) * 50  # -25 to +25 adjustment
+        tsr_rating = elo + tsr_adjustment
+        
+        # Ensure TSR stays within reasonable bounds
+        tsr_rating = max(800, min(3500, tsr_rating))
+        
         # Prepare update
         updates.append({
             'rating_id': rating['rating_id'],
-            'tsr_rating': elo,  # TSR = ELO
+            'tsr_rating': tsr_rating,  # Proper Bayesian-adjusted TSR
             'tsr_uncertainty': uncertainty,
             'clay_uncertainty': clay_uncertainty,
             'grass_uncertainty': grass_uncertainty,
