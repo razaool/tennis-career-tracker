@@ -99,7 +99,9 @@ export default function RankingsPage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-lg">{Math.round(player.rating)}</div>
+                  <div className="font-bold text-lg">
+                    {Math.round(player.elo || player.tsr || player.glicko2 || 0)}
+                  </div>
                   <div className="text-xs text-gray-400 uppercase">{system}</div>
                 </div>
               </Link>

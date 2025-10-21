@@ -117,7 +117,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-lg">{Math.round(player.rating)}</div>
+                  <div className="font-bold text-lg">{Math.round(player.elo || 0)}</div>
                   <div className="text-xs text-gray-400">ELO</div>
                 </div>
               </Link>
