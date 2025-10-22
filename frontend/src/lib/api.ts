@@ -44,10 +44,9 @@ export interface PlayerDetail {
 }
 
 export interface TrajectoryPoint {
+  match_number: number;
   date: string;
-  elo: number;
-  tsr: number;
-  glicko2: number;
+  rating: number;
 }
 
 export interface RecentMatch {
@@ -120,6 +119,29 @@ export const apiClient = {
     axiosInstance.get<TrajectoryPoint[]>(`/api/players/compare/trajectory`, {
       params: { 
         players: name, 
+        start_date: startDate, 
+        end_date: endDate, 
+        rating_system: ratingSystem 
+      }
+    }).then(res => res.data),
+  
+  comparePlayerTrajectories: (
+    players: string[], 
+    startDate?: string, 
+    endDate?: string, 
+    ratingSystem: 'elo' | 'tsr' | 'glicko2' = 'elo'
+  ) =>
+    axiosInstance.get<{
+      rating_system: string;
+      date_range: { start?: string; end?: string };
+      players: Array<{
+        name: string;
+        data_points: number;
+        trajectory: TrajectoryPoint[];
+      }>;
+    }>(`/api/players/compare/trajectory`, {
+      params: { 
+        players: players.join(','), 
         start_date: startDate, 
         end_date: endDate, 
         rating_system: ratingSystem 

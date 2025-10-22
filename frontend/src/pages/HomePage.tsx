@@ -1,17 +1,29 @@
 import { useQuery } from '@tanstack/react-query';
-import { dashboardApi, rankingsApi } from '../lib/api';
+import { dashboardApi, rankingsApi, apiClient } from '../lib/api';
 import { TrendingUp, Users, Trophy, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import TrajectoryChart from '../components/TrajectoryChart';
 
 export default function HomePage() {
   const { data: statOfDay } = useQuery({
     queryKey: ['statOfDay'],
-    queryFn: () => dashboardApi.statOfDay().then(res => res.data),
+    queryFn: () => dashboardApi.statOfDay(),
   });
 
   const { data: top10 } = useQuery({
     queryKey: ['rankings', 'current', { limit: 10, system: 'elo' }],
-    queryFn: () => rankingsApi.current({ limit: 10, system: 'elo' }).then(res => res.data),
+    queryFn: () => rankingsApi.current({ limit: 10, system: 'elo' }),
+  });
+
+  // Fetch trajectory data for top 5 players
+  const { data: trajectoryData } = useQuery({
+    queryKey: ['trajectory', 'top5', 'elo'],
+    queryFn: () => {
+      const topPlayers = top10?.rankings?.slice(0, 5).map((p: any) => p.name) || [];
+      if (topPlayers.length === 0) return null;
+      return apiClient.comparePlayerTrajectories(topPlayers, undefined, undefined, 'elo');
+    },
+    enabled: !!top10?.rankings,
   });
 
   return (
@@ -40,7 +52,7 @@ export default function HomePage() {
               <p className="text-xl text-gray-100">{statOfDay.stat}</p>
               {statOfDay.players.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {statOfDay.players.map(player => (
+                  {statOfDay.players.map((player: string) => (
                     <Link
                       key={player}
                       to={`/players/${encodeURIComponent(player)}`}
@@ -54,6 +66,16 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Live Career Trajectory Chart */}
+      {trajectoryData && trajectoryData.players.length > 0 && (
+        <TrajectoryChart
+          data={trajectoryData.players}
+          ratingSystem="elo"
+          title="Live Career Progression"
+          height={450}
+        />
       )}
 
       {/* Quick Stats */}
