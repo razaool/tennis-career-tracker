@@ -153,13 +153,12 @@ export default function TrajectoryChart({
         .map(point => point.rating)
     ).filter(rating => rating != null);
     
-    if (allRatings.length === 0) return [1500, 3000];
+    if (allRatings.length === 0) return [2000, 3000];
     
-    const minRating = Math.min(...allRatings);
     const maxRating = Math.max(...allRatings);
     
-    // Set minimum to 1500 (reasonable starting ELO) or 100 below the actual minimum
-    const yMin = Math.min(1500, minRating - 100);
+    // Set minimum to 2000 ELO as requested
+    const yMin = 2000;
     // Set maximum to 100 above the actual maximum
     const yMax = maxRating + 100;
     
@@ -189,7 +188,10 @@ export default function TrajectoryChart({
 
   const formatXAxisTick = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.getFullYear().toString();
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric' 
+    });
   };
 
   return (
@@ -205,18 +207,19 @@ export default function TrajectoryChart({
         <ResponsiveContainer width="100%" height={height}>
           <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis 
-              dataKey="date" 
-              stroke="#9CA3AF"
-              tickFormatter={formatXAxisTick}
-              label={{ value: 'Year', position: 'insideBottom', offset: -10, style: { textAnchor: 'middle', fill: '#9CA3AF' } }}
-            />
+                    <XAxis 
+                      dataKey="date" 
+                      stroke="#9CA3AF"
+                      tickFormatter={formatXAxisTick}
+                      interval="preserveStartEnd"
+                      label={{ value: 'Date', position: 'insideBottom', offset: -10, style: { textAnchor: 'middle', fill: '#9CA3AF' } }}
+                    />
             <YAxis 
               stroke="#9CA3AF"
               domain={yAxisRange}
               label={{ value: `${getSystemLabel()} Rating`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#9CA3AF' } }}
             />
-            <ReferenceLine y={1500} stroke="#6B7280" strokeDasharray="2 2" />
+                    <ReferenceLine y={2000} stroke="#6B7280" strokeDasharray="2 2" />
             <Tooltip
               contentStyle={{ 
                 backgroundColor: '#1F2937', 
