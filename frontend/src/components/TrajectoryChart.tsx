@@ -37,26 +37,56 @@ export default function TrajectoryChart({
   title, 
   height = 400 
 }: TrajectoryChartProps) {
-  // Transform data for Recharts
+  // Transform data for Recharts using dates
   const chartData = React.useMemo(() => {
-    const maxMatches = Math.max(...data.map(p => p.trajectory.length));
+    // Collect all unique dates from all players
+    const allDates = new Set<string>();
+    data.forEach(player => {
+      player.trajectory.forEach(point => {
+        allDates.add(point.date);
+      });
+    });
+    
+    // Sort dates chronologically
+    const sortedDates = Array.from(allDates).sort();
+    
+    // Create chart points for each date
     const chartPoints: any[] = [];
     
-    // Create data points for each match number
-    for (let i = 0; i < maxMatches; i++) {
-      const point: any = { match_number: i };
+    sortedDates.forEach(date => {
+      const point: any = { date };
       
       data.forEach(player => {
-        const trajectoryPoint = player.trajectory[i];
+        // Find the trajectory point for this date
+        const trajectoryPoint = player.trajectory.find(p => p.date === date);
         if (trajectoryPoint) {
           point[player.name] = trajectoryPoint.rating;
         }
       });
       
       chartPoints.push(point);
-    }
+    });
     
     return chartPoints;
+  }, [data]);
+
+  // Calculate appropriate Y-axis range
+  const yAxisRange = React.useMemo(() => {
+    const allRatings = data.flatMap(player => 
+      player.trajectory.map(point => point.rating)
+    ).filter(rating => rating != null);
+    
+    if (allRatings.length === 0) return [0, 3000];
+    
+    const minRating = Math.min(...allRatings);
+    const maxRating = Math.max(...allRatings);
+    
+    // Set minimum to 1500 (reasonable starting ELO) or 100 below the actual minimum
+    const yMin = Math.min(1500, minRating - 100);
+    // Set maximum to 100 above the actual maximum
+    const yMax = maxRating + 100;
+    
+    return [yMin, yMax];
   }, [data]);
 
   const getSystemLabel = () => {
@@ -71,8 +101,18 @@ export default function TrajectoryChart({
     return Math.round(value);
   };
 
-  const formatTooltipLabel = (matchNumber: number) => {
-    return `Career Match ${matchNumber}`;
+  const formatTooltipLabel = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  };
+
+  const formatXAxisTick = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.getFullYear().toString();
   };
 
   return (
@@ -89,16 +129,17 @@ export default function TrajectoryChart({
           <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
             <XAxis 
-              dataKey="match_number" 
+              dataKey="date" 
               stroke="#9CA3AF"
-              tickFormatter={(value) => value.toString()}
-              label={{ value: 'Career Match Number', position: 'insideBottom', offset: -10, style: { textAnchor: 'middle', fill: '#9CA3AF' } }}
+              tickFormatter={formatXAxisTick}
+              label={{ value: 'Year', position: 'insideBottom', offset: -10, style: { textAnchor: 'middle', fill: '#9CA3AF' } }}
             />
             <YAxis 
               stroke="#9CA3AF"
+              domain={yAxisRange}
               label={{ value: `${getSystemLabel()} Rating`, angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#9CA3AF' } }}
             />
-            <ReferenceLine y={0} stroke="#6B7280" strokeDasharray="2 2" />
+            <ReferenceLine y={1500} stroke="#6B7280" strokeDasharray="2 2" />
             <Tooltip
               contentStyle={{ 
                 backgroundColor: '#1F2937', 
