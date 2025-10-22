@@ -44,7 +44,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Top Bar */}
-      <div className="flex justify-between items-center px-6 py-4 border-b border-gray-800">
+      <div className="flex justify-between items-center px-4 py-4 border-b border-gray-800">
         <div className="text-xl font-bold text-tennis-green">TENNIS CAREER TRACKER</div>
         <div className="text-sm text-gray-400">EXPERIMENTAL INTERFACE</div>
       </div>
@@ -54,7 +54,7 @@ export default function HomePage() {
         {/* Left Panel - Controls & Player List */}
         <div className="w-1/3 bg-gray-900 border-r border-gray-800 flex flex-col">
           {/* System Selection */}
-          <div className="p-6 border-b border-gray-800">
+          <div className="p-4 border-b border-gray-800">
             <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">RATING SYSTEM</h3>
             <div className="flex space-x-2">
               {(['elo', 'tsr', 'glicko2'] as const).map(system => (
@@ -74,7 +74,7 @@ export default function HomePage() {
           </div>
 
           {/* Stats Summary */}
-          <div className="p-6 border-b border-gray-800">
+          <div className="p-4 border-b border-gray-800">
             <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">MAIN METRICS</h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
@@ -93,7 +93,7 @@ export default function HomePage() {
           </div>
 
           {/* Player Selection */}
-          <div className="flex-1 p-6 overflow-y-auto">
+          <div className="flex-1 p-4 overflow-y-auto">
             <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">
               PLAYER SELECTION ({selectedPlayers.length}/8)
             </h3>
@@ -144,7 +144,7 @@ export default function HomePage() {
 
           {/* Stat of the Day */}
           {statOfDay && (
-            <div className="p-6 border-t border-gray-800">
+            <div className="p-4 border-t border-gray-800">
               <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">STAT OF THE DAY</h3>
               <div className="bg-gray-800 rounded p-4">
                 <div className="text-xs text-tennis-green uppercase tracking-wide mb-2">{statOfDay.category}</div>
@@ -170,7 +170,7 @@ export default function HomePage() {
         {/* Right Panel - Main Chart */}
         <div className="flex-1 bg-black flex flex-col">
           {/* Chart Header */}
-          <div className="p-6 border-b border-gray-800">
+          <div className="p-4 border-b border-gray-800">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold text-white mb-2">LIVE CAREER PROGRESSION</h2>
@@ -193,7 +193,7 @@ export default function HomePage() {
           </div>
 
           {/* Chart Area */}
-          <div className="flex-1 p-6">
+          <div className="flex-1 p-4">
             {trajectoryData && trajectoryData.players.length > 0 ? (
               <TrajectoryChart
                 data={trajectoryData.players}
@@ -215,7 +215,7 @@ export default function HomePage() {
           </div>
 
           {/* Bottom Controls */}
-          <div className="p-6 border-t border-gray-800">
+          <div className="p-4 border-t border-gray-800">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
                 <div className="text-sm text-gray-400">
