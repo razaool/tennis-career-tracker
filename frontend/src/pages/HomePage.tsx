@@ -1,211 +1,242 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { dashboardApi, rankingsApi, apiClient } from '../lib/api';
-import { TrendingUp, Users, Trophy, Zap } from 'lucide-react';
+import { BarChart3 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import TrajectoryChart from '../components/TrajectoryChart';
 
 export default function HomePage() {
+  const [selectedSystem, setSelectedSystem] = useState<'elo' | 'tsr' | 'glicko2'>('elo');
+  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
+
   const { data: statOfDay } = useQuery({
     queryKey: ['statOfDay'],
     queryFn: () => dashboardApi.statOfDay(),
   });
 
   const { data: top10 } = useQuery({
-    queryKey: ['rankings', 'current', { limit: 10, system: 'elo' }],
-    queryFn: () => rankingsApi.current({ limit: 10, system: 'elo' }),
+    queryKey: ['rankings', 'current', { limit: 10, system: selectedSystem }],
+    queryFn: () => rankingsApi.current({ limit: 10, system: selectedSystem }),
   });
 
-  // Fetch trajectory data for top 5 players
+  // Fetch trajectory data for selected players or top 5
   const { data: trajectoryData } = useQuery({
-    queryKey: ['trajectory', 'top5', 'elo'],
+    queryKey: ['trajectory', selectedPlayers.length > 0 ? selectedPlayers : 'top5', selectedSystem],
     queryFn: () => {
-      const topPlayers = top10?.rankings?.slice(0, 5).map((p: any) => p.name) || [];
-      if (topPlayers.length === 0) return null;
-      return apiClient.comparePlayerTrajectories(topPlayers, undefined, undefined, 'elo');
+      const players = selectedPlayers.length > 0 ? selectedPlayers : top10?.rankings?.slice(0, 5).map((p: any) => p.name) || [];
+      if (players.length === 0) return null;
+      return apiClient.comparePlayerTrajectories(players, undefined, undefined, selectedSystem);
     },
     enabled: !!top10?.rankings,
   });
 
+  const handlePlayerSelect = (playerName: string) => {
+    setSelectedPlayers(prev => {
+      if (prev.includes(playerName)) {
+        return prev.filter(p => p !== playerName);
+      } else if (prev.length < 8) {
+        return [...prev, playerName];
+      }
+      return prev;
+    });
+  };
+
   return (
-    <div className="space-y-8">
-      {/* Hero Section */}
-      <div className="text-center space-y-4 py-12">
-        <h1 className="text-5xl font-bold bg-gradient-to-r from-tennis-green to-primary-500 bg-clip-text text-transparent">
-          Tennis Career Tracker
-        </h1>
-        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-          Analyzing 57 years of professional tennis • 740,000+ matches • 3 rating systems
-        </p>
+    <div className="min-h-screen bg-black text-white">
+      {/* Top Bar */}
+      <div className="flex justify-between items-center px-6 py-4 border-b border-gray-800">
+        <div className="text-xl font-bold text-tennis-green">TENNIS CAREER TRACKER</div>
+        <div className="text-sm text-gray-400">EXPERIMENTAL INTERFACE</div>
       </div>
 
-      {/* Stat of the Day */}
-      {statOfDay && (
-        <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-primary-500/20 rounded-lg p-6">
-          <div className="flex items-start space-x-4">
-            <div className="bg-primary-500/10 p-3 rounded-lg flex-shrink-0">
-              <Zap className="w-6 h-6 text-primary-500" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="text-sm font-semibold text-primary-400 uppercase tracking-wide mb-2">
-                Stat of the Day • {statOfDay.category}
-              </h2>
-              <p className="text-lg text-gray-100 leading-relaxed">{statOfDay.stat}</p>
-              {statOfDay.players.length > 0 && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {statOfDay.players.map((player: string) => (
-                    <Link
-                      key={player}
-                      to={`/players/${encodeURIComponent(player)}`}
-                      className="text-sm bg-gray-700 hover:bg-gray-600 px-3 py-1.5 rounded-full transition-colors"
-                    >
-                      {player}
-                    </Link>
-                  ))}
-                </div>
-              )}
+      {/* Main Content */}
+      <div className="flex h-[calc(100vh-80px)]">
+        {/* Left Panel - Controls & Player List */}
+        <div className="w-1/3 bg-gray-900 border-r border-gray-800 flex flex-col">
+          {/* System Selection */}
+          <div className="p-6 border-b border-gray-800">
+            <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">RATING SYSTEM</h3>
+            <div className="flex space-x-2">
+              {(['elo', 'tsr', 'glicko2'] as const).map(system => (
+                <button
+                  key={system}
+                  onClick={() => setSelectedSystem(system)}
+                  className={`px-4 py-2 rounded text-sm font-semibold transition-colors ${
+                    selectedSystem === system
+                      ? 'bg-tennis-green text-black'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  {system === 'elo' ? 'ELO' : system === 'tsr' ? 'TSR' : 'GLICKO-2'}
+                </button>
+              ))}
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Live Career Trajectory Chart */}
-      {trajectoryData && trajectoryData.players.length > 0 && (
-        <TrajectoryChart
-          data={trajectoryData.players}
-          ratingSystem="elo"
-          title="Live Career Progression"
-          height={450}
-        />
-      )}
+          {/* Stats Summary */}
+          <div className="p-6 border-b border-gray-800">
+            <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">MAIN METRICS</h3>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 text-sm">PLAYERS</span>
+                <span className="text-2xl font-bold text-tennis-green">28,986</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 text-sm">TOTAL MATCHES</span>
+                <span className="text-2xl font-bold text-tennis-green">740,000+</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 text-sm">RATING SYSTEMS</span>
+                <span className="text-2xl font-bold text-tennis-green">3</span>
+              </div>
+            </div>
+          </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatCard
-          icon={<Trophy className="w-8 h-8" />}
-          label="Total Matches"
-          value="740,000+"
-          color="text-yellow-500"
-        />
-        <StatCard
-          icon={<Users className="w-8 h-8" />}
-          label="Players Tracked"
-          value="28,986"
-          color="text-tennis-green"
-        />
-        <StatCard
-          icon={<TrendingUp className="w-8 h-8" />}
-          label="Rating Systems"
-          value="3"
-          subtitle="ELO • TSR • Glicko-2"
-          color="text-primary-500"
-        />
-      </div>
-
-      {/* Current Top 10 */}
-      <div className="card">
-        <h2 className="text-2xl font-bold mb-6 flex items-center">
-          <Trophy className="w-6 h-6 mr-2 text-yellow-500" />
-          Current Top 10 Rankings
-        </h2>
-        
-        {top10 && (
-          <div className="space-y-2">
-            {top10.rankings?.map((player: any, index: number) => (
-              <Link
-                key={player.name}
-                to={`/players/${encodeURIComponent(player.name)}`}
-                className="flex items-center justify-between p-4 bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-colors group"
-              >
-                <div className="flex items-center space-x-4">
-                  <div className="w-8 text-center">
-                    <span className={`font-bold text-lg ${
-                      index === 0 ? 'text-yellow-500' :
-                      index === 1 ? 'text-gray-400' :
-                      index === 2 ? 'text-orange-600' :
-                      'text-gray-500'
-                    }`}>
-                      {index + 1}
-                    </span>
-                  </div>
-                  <div>
-                    <div className="font-semibold group-hover:text-primary-400 transition-colors">
-                      {player.name}
-                    </div>
-                    {player.form && (
-                      <div className="text-sm text-gray-400">
-                        Form: {player.form}%
+          {/* Player Selection */}
+          <div className="flex-1 p-6 overflow-y-auto">
+            <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">
+              PLAYER SELECTION ({selectedPlayers.length}/8)
+            </h3>
+            
+            {top10 && (
+              <div className="space-y-2">
+                {top10.rankings?.map((player: any, index: number) => (
+                  <div
+                    key={player.name}
+                    className={`p-3 rounded cursor-pointer transition-colors ${
+                      selectedPlayers.includes(player.name)
+                        ? 'bg-tennis-green text-black'
+                        : 'bg-gray-800 hover:bg-gray-700'
+                    }`}
+                    onClick={() => handlePlayerSelect(player.name)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <span className={`font-bold text-sm ${
+                          selectedPlayers.includes(player.name) ? 'text-black' : 'text-gray-400'
+                        }`}>
+                          {index + 1}
+                        </span>
+                        <div>
+                          <div className={`font-semibold text-sm ${
+                            selectedPlayers.includes(player.name) ? 'text-black' : 'text-white'
+                          }`}>
+                            {player.name}
+                          </div>
+                          <div className={`text-xs ${
+                            selectedPlayers.includes(player.name) ? 'text-gray-700' : 'text-gray-400'
+                          }`}>
+                            {selectedSystem === 'elo' ? Math.round(player.elo || 0) :
+                             selectedSystem === 'tsr' ? Math.round(player.tsr || 0) :
+                             Math.round(player.glicko2 || 0)} {selectedSystem.toUpperCase()}
+                          </div>
+                        </div>
                       </div>
-                    )}
+                      {selectedPlayers.includes(player.name) && (
+                        <div className="w-2 h-2 bg-black rounded-full"></div>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-bold text-lg">{Math.round(player.elo || 0)}</div>
-                  <div className="text-xs text-gray-400">ELO</div>
-                </div>
-              </Link>
-            ))}
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      {/* Quick Links */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <QuickLinkCard
-          to="/rankings"
-          icon={<TrendingUp className="w-8 h-8" />}
-          title="Rankings"
-          description="View current rankings by ELO, TSR, and Glicko-2"
-        />
-        <QuickLinkCard
-          to="/players"
-          icon={<Users className="w-8 h-8" />}
-          title="Players"
-          description="Browse player profiles and career statistics"
-        />
-        <QuickLinkCard
-          to="/predict"
-          icon={<Zap className="w-8 h-8" />}
-          title="Match Predictor"
-          description="Predict match outcomes with our AI model"
-        />
-      </div>
-    </div>
-  );
-}
+          {/* Stat of the Day */}
+          {statOfDay && (
+            <div className="p-6 border-t border-gray-800">
+              <h3 className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wide">STAT OF THE DAY</h3>
+              <div className="bg-gray-800 rounded p-4">
+                <div className="text-xs text-tennis-green uppercase tracking-wide mb-2">{statOfDay.category}</div>
+                <p className="text-sm text-gray-200 leading-relaxed">{statOfDay.stat}</p>
+                {statOfDay.players.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1">
+                    {statOfDay.players.map((player: string) => (
+                      <Link
+                        key={player}
+                        to={`/players/${encodeURIComponent(player)}`}
+                        className="text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded transition-colors"
+                      >
+                        {player}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
-function StatCard({ icon, label, value, subtitle, color }: any) {
-  return (
-    <div className="card">
-      <div className="flex items-center space-x-4">
-        <div className={`${color}`}>{icon}</div>
-        <div>
-          <div className="text-sm text-gray-400">{label}</div>
-          <div className="text-2xl font-bold">{value}</div>
-          {subtitle && <div className="text-xs text-gray-500">{subtitle}</div>}
+        {/* Right Panel - Main Chart */}
+        <div className="flex-1 bg-black flex flex-col">
+          {/* Chart Header */}
+          <div className="p-6 border-b border-gray-800">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-white mb-2">LIVE CAREER PROGRESSION</h2>
+                <p className="text-sm text-gray-400">
+                  {selectedPlayers.length > 0 
+                    ? `Tracking ${selectedPlayers.length} selected players` 
+                    : 'Top 5 players by current ranking'
+                  } • {selectedSystem.toUpperCase()} Rating System
+                </p>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="text-sm text-gray-400">
+                  <span className="text-tennis-green">●</span> LIVE
+                </div>
+                <div className="text-sm text-gray-400">
+                  {trajectoryData?.players.reduce((sum, p) => sum + p.data_points, 0) || 0} DATA POINTS
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Chart Area */}
+          <div className="flex-1 p-6">
+            {trajectoryData && trajectoryData.players.length > 0 ? (
+              <TrajectoryChart
+                data={trajectoryData.players}
+                ratingSystem={selectedSystem}
+                title=""
+                height={600}
+              />
+            ) : (
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-gray-800 rounded-full flex items-center justify-center">
+                    <BarChart3 className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">No Data Available</h3>
+                  <p className="text-sm text-gray-500">Select players from the left panel to view their career progression</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Bottom Controls */}
+          <div className="p-6 border-t border-gray-800">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-6">
+                <div className="text-sm text-gray-400">
+                  <span className="text-tennis-green">●</span> RUNNING
+                </div>
+                <div className="flex space-x-2">
+                  <button className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm transition-colors">
+                    REFRESH
+                  </button>
+                  <button className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm transition-colors">
+                    EXPORT
+                  </button>
+                </div>
+              </div>
+              <div className="text-xs text-gray-500">
+                TENNIS CAREER TRACKER • 2025 DATA
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
-function QuickLinkCard({ to, icon, title, description }: any) {
-  return (
-    <Link
-      to={to}
-      className="card hover:border-primary-500/50 transition-all group cursor-pointer"
-    >
-      <div className="flex items-start space-x-4">
-        <div className="text-primary-500 group-hover:scale-110 transition-transform">
-          {icon}
-        </div>
-        <div>
-          <h3 className="font-bold text-lg mb-1 group-hover:text-primary-400 transition-colors">
-            {title}
-          </h3>
-          <p className="text-sm text-gray-400">{description}</p>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
