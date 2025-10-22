@@ -29,6 +29,12 @@ const RankingsPage: React.FC = () => {
   });
 
   const getRatingValue = (player: Player) => {
+    // For surface-specific rankings, use surface_rating if available
+    if (surface !== 'all' && 'surface_rating' in player) {
+      return (player as any).surface_rating;
+    }
+    
+    // For overall rankings, use the selected system
     switch (system) {
       case 'tsr': return player.tsr;
       case 'glicko2': return player.glicko2;
@@ -37,6 +43,12 @@ const RankingsPage: React.FC = () => {
   };
 
   const getSystemLabel = () => {
+    // For surface-specific rankings, always show ELO since that's what surface rankings use
+    if (surface !== 'all') {
+      return 'ELO';
+    }
+    
+    // For overall rankings, use the selected system
     switch (system) {
       case 'tsr': return 'TSR';
       case 'glicko2': return 'Glicko-2';
@@ -78,16 +90,22 @@ const RankingsPage: React.FC = () => {
                   <button
                     key={s}
                     onClick={() => setSystem(s)}
+                    disabled={surface !== 'all'}
                     className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                      system === s 
-                        ? 'bg-primary-500 text-white' 
-                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      surface !== 'all' 
+                        ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                        : system === s 
+                          ? 'bg-primary-500 text-white' 
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                     }`}
                   >
                     {s === 'elo' ? 'ELO' : s === 'tsr' ? 'TSR' : 'Glicko-2'}
                   </button>
                 ))}
               </div>
+              {surface !== 'all' && (
+                <p className="text-xs text-gray-500 mt-1">Surface rankings use ELO only</p>
+              )}
             </div>
 
             {/* Surface */}
