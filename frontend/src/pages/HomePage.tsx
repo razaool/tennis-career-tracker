@@ -40,23 +40,23 @@ export default function HomePage() {
 
       {/* Stat of the Day */}
       {statOfDay && (
-        <div className="card bg-gradient-to-br from-gray-800 to-gray-900 border-primary-500/20">
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-primary-500/20 rounded-lg p-6">
           <div className="flex items-start space-x-4">
-            <div className="bg-primary-500/10 p-3 rounded-lg">
-              <Zap className="w-8 h-8 text-primary-500" />
+            <div className="bg-primary-500/10 p-3 rounded-lg flex-shrink-0">
+              <Zap className="w-6 h-6 text-primary-500" />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <h2 className="text-sm font-semibold text-primary-400 uppercase tracking-wide mb-2">
                 Stat of the Day • {statOfDay.category}
               </h2>
-              <p className="text-xl text-gray-100">{statOfDay.stat}</p>
+              <p className="text-lg text-gray-100 leading-relaxed">{statOfDay.stat}</p>
               {statOfDay.players.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-wrap gap-2">
                   {statOfDay.players.map((player: string) => (
                     <Link
                       key={player}
                       to={`/players/${encodeURIComponent(player)}`}
-                      className="text-sm bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-full transition-colors"
+                      className="text-sm bg-gray-700 hover:bg-gray-600 px-3 py-1.5 rounded-full transition-colors"
                     >
                       {player}
                     </Link>
