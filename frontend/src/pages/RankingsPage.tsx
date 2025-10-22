@@ -7,23 +7,22 @@ import { api, type Player } from '../lib/api';
 
 const RankingsPage: React.FC = () => {
   const [system, setSystem] = useState<'elo' | 'tsr' | 'glicko2'>('elo');
-  const [activeOnly, setActiveOnly] = useState(true);
   const [surface, setSurface] = useState<'all' | 'hard' | 'clay' | 'grass'>('all');
   const [limit, setLimit] = useState(50);
 
   const { data: rankings, isLoading } = useQuery({
-    queryKey: ['rankings', system, activeOnly, surface, limit],
+    queryKey: ['rankings', system, surface, limit],
     queryFn: () => {
       if (surface === 'all') {
         return api.getRankings({ 
           limit, 
           system, 
-          active: activeOnly 
+          active: true 
         });
       } else {
         return api.getSurfaceRankings(surface, { 
           limit, 
-          active_only: activeOnly 
+          active_only: true 
         });
       }
     },
@@ -104,21 +103,6 @@ const RankingsPage: React.FC = () => {
                 <option value="clay">🟤 Clay Court</option>
                 <option value="grass">🟢 Grass Court</option>
               </select>
-            </div>
-
-            {/* Player Filter */}
-            <div>
-              <label className="block text-sm text-gray-300 mb-2">Players</label>
-              <button
-                onClick={() => setActiveOnly(!activeOnly)}
-                className={`w-full px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                  activeOnly 
-                    ? 'bg-primary-500 text-white' 
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
-              >
-                {activeOnly ? 'Active Only' : 'All Players'}
-              </button>
             </div>
 
             {/* Limit */}
@@ -225,12 +209,6 @@ const RankingsPage: React.FC = () => {
                         {player.name}
                       </div>
                       <div className="flex items-center gap-4 mt-1">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${player.is_active ? 'bg-green-500' : 'bg-gray-500'}`}></div>
-                          <span className="text-sm text-gray-400">
-                            {player.is_active ? 'Active' : 'Inactive'}
-                          </span>
-                        </div>
                         {player.form_index && (
                           <span className="text-sm text-gray-400">
                             Form: {player.form_index.toFixed(1)}%
