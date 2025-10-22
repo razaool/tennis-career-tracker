@@ -37,13 +37,18 @@ export default function TrajectoryChart({
   title, 
   height = 400 
 }: TrajectoryChartProps) {
-  // Transform data for Recharts using dates
+  // Transform data for Recharts using dates from this year only
   const chartData = React.useMemo(() => {
-    // Collect all unique dates from all players
+    const currentYear = new Date().getFullYear().toString();
+    
+    // Collect all unique dates from this year only
     const allDates = new Set<string>();
     data.forEach(player => {
       player.trajectory.forEach(point => {
-        allDates.add(point.date);
+        // Only include dates from this year
+        if (point.date.startsWith(currentYear)) {
+          allDates.add(point.date);
+        }
       });
     });
     
@@ -70,13 +75,17 @@ export default function TrajectoryChart({
     return chartPoints;
   }, [data]);
 
-  // Calculate appropriate Y-axis range
+  // Calculate appropriate Y-axis range for this year's data
   const yAxisRange = React.useMemo(() => {
+    const currentYear = new Date().getFullYear().toString();
+    
     const allRatings = data.flatMap(player => 
-      player.trajectory.map(point => point.rating)
+      player.trajectory
+        .filter(point => point.date.startsWith(currentYear)) // Only this year's data
+        .map(point => point.rating)
     ).filter(rating => rating != null);
     
-    if (allRatings.length === 0) return [0, 3000];
+    if (allRatings.length === 0) return [1500, 3000];
     
     const minRating = Math.min(...allRatings);
     const maxRating = Math.max(...allRatings);
@@ -120,7 +129,7 @@ export default function TrajectoryChart({
       <div className="mb-6">
         <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
         <p className="text-sm text-gray-400">
-          Career progression based on {getSystemLabel()} ratings
+          Career progression based on {getSystemLabel()} ratings • {new Date().getFullYear()} season
         </p>
       </div>
       
