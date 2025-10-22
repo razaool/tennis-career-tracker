@@ -41,15 +41,29 @@ function App() {
           </nav>
 
           {/* Main Content */}
-          <main className="container mx-auto px-4 py-8">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/rankings" element={<RankingsPage />} />
-              <Route path="/players" element={<PlayersPage />} />
-              <Route path="/players/:playerName" element={<PlayerDetailPage />} />
-              <Route path="/predict" element={<PredictPage />} />
-            </Routes>
-          </main>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/rankings" element={
+              <main className="container mx-auto px-4 py-8">
+                <RankingsPage />
+              </main>
+            } />
+            <Route path="/players" element={
+              <main className="container mx-auto px-4 py-8">
+                <PlayersPage />
+              </main>
+            } />
+            <Route path="/players/:playerName" element={
+              <main className="container mx-auto px-4 py-8">
+                <PlayerDetailPage />
+              </main>
+            } />
+            <Route path="/predict" element={
+              <main className="container mx-auto px-4 py-8">
+                <PredictPage />
+              </main>
+            } />
+          </Routes>
 
           {/* Footer */}
           <footer className="bg-gray-800 border-t border-gray-700 mt-16">
