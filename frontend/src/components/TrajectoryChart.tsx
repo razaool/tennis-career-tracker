@@ -37,18 +37,86 @@ export default function TrajectoryChart({
   title, 
   height = 400 
 }: TrajectoryChartProps) {
-  // Transform data for Recharts using dates from this year only
+  // Transform data for Recharts using dates from this year only with linear interpolation
   const chartData = React.useMemo(() => {
     const currentYear = new Date().getFullYear().toString();
     
-    // Collect all unique dates from this year only
-    const allDates = new Set<string>();
-    data.forEach(player => {
-      player.trajectory.forEach(point => {
-        // Only include dates from this year
-        if (point.date.startsWith(currentYear)) {
-          allDates.add(point.date);
+    // Helper function to interpolate between two points
+    const interpolate = (point1: TrajectoryPoint, point2: TrajectoryPoint, targetDate: string): number => {
+      const date1 = new Date(point1.date).getTime();
+      const date2 = new Date(point2.date).getTime();
+      const target = new Date(targetDate).getTime();
+      
+      // Linear interpolation formula
+      const ratio = (target - date1) / (date2 - date1);
+      return point1.rating + (point2.rating - point1.rating) * ratio;
+    };
+    
+    // Process each player's trajectory with interpolation
+    const interpolatedData = data.map(player => {
+      const currentYearPoints = player.trajectory
+        .filter(point => point.date.startsWith(currentYear))
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      
+      if (currentYearPoints.length === 0) return { name: player.name, points: [] };
+      if (currentYearPoints.length === 1) return { name: player.name, points: currentYearPoints };
+      
+      // Create interpolated points for every day between first and last match
+      const interpolatedPoints: TrajectoryPoint[] = [];
+      const startDate = new Date(currentYearPoints[0].date);
+      const endDate = new Date(currentYearPoints[currentYearPoints.length - 1].date);
+      
+      // Generate all dates between start and end
+      const allDates: string[] = [];
+      const currentDate = new Date(startDate);
+      while (currentDate <= endDate) {
+        allDates.push(currentDate.toISOString().split('T')[0]);
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      
+      // Interpolate values for each date
+      allDates.forEach(date => {
+        // Check if we have an exact match
+        const exactMatch = currentYearPoints.find(p => p.date === date);
+        if (exactMatch) {
+          interpolatedPoints.push(exactMatch);
+          return;
         }
+        
+        // Find the two points to interpolate between
+        let beforePoint: TrajectoryPoint | null = null;
+        let afterPoint: TrajectoryPoint | null = null;
+        
+        for (let i = 0; i < currentYearPoints.length - 1; i++) {
+          const point1 = currentYearPoints[i];
+          const point2 = currentYearPoints[i + 1];
+          
+          if (new Date(date) >= new Date(point1.date) && new Date(date) <= new Date(point2.date)) {
+            beforePoint = point1;
+            afterPoint = point2;
+            break;
+          }
+        }
+        
+        // If we found points to interpolate between, do the interpolation
+        if (beforePoint && afterPoint) {
+          const interpolatedRating = interpolate(beforePoint, afterPoint, date);
+          interpolatedPoints.push({
+            match_number: 0, // Not meaningful for interpolated points
+            date: date,
+            rating: interpolatedRating
+          });
+        }
+      });
+      
+      return { name: player.name, points: interpolatedPoints };
+    });
+    
+    // Collect all unique dates from interpolated data
+    const allDates = new Set<string>();
+    interpolatedData.forEach(player => {
+      player.points.forEach(point => {
+        allDates.add(point.date);
       });
     });
     
@@ -61,9 +129,9 @@ export default function TrajectoryChart({
     sortedDates.forEach(date => {
       const point: any = { date };
       
-      data.forEach(player => {
+      interpolatedData.forEach(player => {
         // Find the trajectory point for this date
-        const trajectoryPoint = player.trajectory.find(p => p.date === date);
+        const trajectoryPoint = player.points.find(p => p.date === date);
         if (trajectoryPoint) {
           point[player.name] = trajectoryPoint.rating;
         }
@@ -128,9 +196,9 @@ export default function TrajectoryChart({
     <div className="bg-gray-800 rounded-lg p-6">
       <div className="mb-6">
         <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-        <p className="text-sm text-gray-400">
-          Career progression based on {getSystemLabel()} ratings • {new Date().getFullYear()} season
-        </p>
+                <p className="text-sm text-gray-400">
+                  Career progression based on {getSystemLabel()} ratings • {new Date().getFullYear()} season • Interpolated for smooth visualization
+                </p>
       </div>
       
       <div className="mb-4">
