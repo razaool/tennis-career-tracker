@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-export const api = axios.create({
+const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -12,66 +12,68 @@ export const api = axios.create({
 // Types
 export interface Player {
   name: string;
-  current_elo: number;
+  elo: number;
+  tsr: number;
+  glicko2: number;
   peak_elo: number;
   career_matches: number;
   grand_slams: number;
   is_active: boolean;
   last_match: string;
+  form_index?: number;
+  big_match_rating?: number;
+  rank?: number;
 }
 
-export interface PlayerDetail extends Player {
-  current_ratings: {
-    elo: number;
-    tsr: number;
-    glicko2: number;
-    form_index: number;
-    big_match_rating: number | null;
-  };
-  career_stats: {
-    total_matches: number;
-    wins: number;
-    losses: number;
-    win_percentage: number;
-  };
-  peak_ratings: {
-    peak_elo: number;
-    peak_tsr: number;
-    peak_glicko2: number;
-  };
-  surface_ratings: {
-    clay: number;
-    grass: number;
-    hard: number;
-  };
+export interface PlayerDetail {
+  name: string;
+  elo: number;
+  tsr: number;
+  glicko2: number;
+  peak_elo: number;
+  career_matches: number;
+  grand_slams: number;
+  wins: number;
+  losses: number;
+  win_percentage: number;
+  form_index: number;
+  big_match_rating: number;
+  tournament_success_score: number;
+  is_active: boolean;
+  last_match: string;
+}
+
+export interface TrajectoryPoint {
+  date: string;
+  elo: number;
+  tsr: number;
+  glicko2: number;
+}
+
+export interface RecentMatch {
+  date: string;
+  opponent: string;
+  tournament: string;
+  surface: string;
+  won: boolean;
+  elo_before: number;
+  elo_after: number;
 }
 
 export interface MatchPrediction {
-  player1: {
-    name: string;
-    current_elo: number;
-    surface_elo: number;
-    surface_record: string;
-    form: number;
-  };
-  player2: {
-    name: string;
-    current_elo: number;
-    surface_elo: number;
-    surface_record: string;
-    form: number;
-  };
+  player1: string;
+  player2: string;
   surface: string;
   prediction: {
-    player1_win_probability: number;
-    player2_win_probability: number;
+    winner: string;
+    probability: number;
     confidence: string;
-    expected_closeness: string;
   };
   factors: {
-    elo_advantage: string;
-    surface_advantage: string;
-    form_advantage: string;
+    elo_difference: number;
+    surface_advantage: number;
+    form_advantage: number;
+    big_match_experience: number;
   };
   breakdown: {
     base_probability: number;
@@ -79,6 +81,7 @@ export interface MatchPrediction {
     form_adjusted: number;
     clamped: boolean;
   };
+  note: string;
 }
 
 export interface StatOfDay {
@@ -88,48 +91,121 @@ export interface StatOfDay {
   value?: number;
 }
 
+export interface RankingsResponse {
+  rankings: Player[];
+  total: number;
+}
+
 // API Functions
+export const apiClient = {
+  // Players
+  getPlayers: (params?: { 
+    limit?: number; 
+    offset?: number; 
+    active?: boolean; 
+    min_elo?: number; 
+    sort_by?: 'elo' | 'tsr' | 'glicko2' 
+  }) =>
+    axiosInstance.get<Player[]>('/api/players', { params }).then(res => res.data),
+  
+  getPlayer: (name: string) =>
+    axiosInstance.get<PlayerDetail>(`/api/players/${encodeURIComponent(name)}`).then(res => res.data),
+  
+  getPlayerTrajectory: (
+    name: string, 
+    startDate: string, 
+    endDate: string, 
+    ratingSystem: 'elo' | 'tsr' | 'glicko2'
+  ) =>
+    axiosInstance.get<TrajectoryPoint[]>(`/api/players/compare/trajectory`, {
+      params: { 
+        players: name, 
+        start_date: startDate, 
+        end_date: endDate, 
+        rating_system: ratingSystem 
+      }
+    }).then(res => res.data),
+  
+  getPlayerRecentMatches: (name: string, limit: number = 10) =>
+    axiosInstance.get<RecentMatch[]>(`/api/players/${encodeURIComponent(name)}/recent`, { 
+      params: { limit } 
+    }).then(res => res.data),
+
+  // Rankings
+  getRankings: (params?: { 
+    limit?: number; 
+    system?: 'elo' | 'tsr' | 'glicko2'; 
+    active?: boolean 
+  }) =>
+    axiosInstance.get<RankingsResponse>('/api/rankings/current', { params }).then(res => res.data),
+  
+  getSurfaceRankings: (
+    surface: 'clay' | 'grass' | 'hard', 
+    params?: { limit?: number; active_only?: boolean }
+  ) =>
+    axiosInstance.get<RankingsResponse>(`/api/rankings/surface/${surface}`, { params }).then(res => res.data),
+
+  // Predictions
+  predictMatch: (player1: string, player2: string, surface: 'clay' | 'grass' | 'hard') =>
+    axiosInstance.get<MatchPrediction>('/api/predict/match', {
+      params: { player1, player2, surface }
+    }).then(res => res.data),
+
+  // Dashboard
+  getStatOfDay: () =>
+    axiosInstance.get<StatOfDay>('/api/dashboard/stat-of-day').then(res => res.data),
+  
+  getTop10: () =>
+    axiosInstance.get<Player[]>('/api/rankings/current', { 
+      params: { limit: 10, system: 'elo' } 
+    }).then(res => res.data),
+
+  // Head-to-Head
+  getH2H: (player1: string, player2: string, surface?: string) =>
+    axiosInstance.get(`/api/h2h/${encodeURIComponent(player1)}/${encodeURIComponent(player2)}`, {
+      params: surface ? { surface } : {}
+    }).then(res => res.data),
+};
+
 export const playerApi = {
   list: (params?: { limit?: number; offset?: number; active?: boolean; min_elo?: number }) =>
-    api.get<{ total: number; players: Player[] }>('/api/players', { params }),
+    apiClient.getPlayers(params),
   
   get: (name: string) =>
-    api.get<PlayerDetail>(`/api/players/${encodeURIComponent(name)}`),
+    apiClient.getPlayer(name),
   
   recent: (name: string, limit: number = 20) =>
-    api.get(`/api/players/${encodeURIComponent(name)}/recent`, { params: { limit } }),
+    apiClient.getPlayerRecentMatches(name, limit),
   
   titles: (name: string) =>
-    api.get(`/api/players/${encodeURIComponent(name)}/titles`),
+    axiosInstance.get(`/api/players/${encodeURIComponent(name)}/titles`).then(res => res.data),
 };
 
 export const rankingsApi = {
   current: (params?: { limit?: number; system?: 'elo' | 'tsr' | 'glicko2'; active?: boolean }) =>
-    api.get('/api/rankings/current', { params }),
+    apiClient.getRankings(params),
   
   surface: (surface: 'clay' | 'grass' | 'hard', limit: number = 10, activeOnly: boolean = true) =>
-    api.get(`/api/rankings/surface/${surface}`, { params: { limit, active_only: activeOnly } }),
+    apiClient.getSurfaceRankings(surface, { limit, active_only: activeOnly }),
 };
 
 export const predictApi = {
   match: (player1: string, player2: string, surface: 'clay' | 'grass' | 'hard') =>
-    api.get<MatchPrediction>('/api/predict/match', {
-      params: { player1, player2, surface }
-    }),
+    apiClient.predictMatch(player1, player2, surface),
 };
 
 export const dashboardApi = {
   statOfDay: () =>
-    api.get<StatOfDay>('/api/dashboard/stat-of-day'),
+    apiClient.getStatOfDay(),
   
   top10: () =>
-    api.get('/api/dashboard/top10'),
+    apiClient.getTop10(),
 };
 
 export const h2hApi = {
   get: (player1: string, player2: string, surface?: string) =>
-    api.get(`/api/h2h/${encodeURIComponent(player1)}/${encodeURIComponent(player2)}`, {
-      params: surface ? { surface } : {}
-    }),
+    apiClient.getH2H(player1, player2, surface),
 };
 
+// Main API export for backward compatibility
+export const api = apiClient;
