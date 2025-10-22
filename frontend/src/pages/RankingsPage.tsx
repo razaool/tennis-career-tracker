@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { TrendingUp, Trophy, Target, BarChart3 } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api, type Player } from '../lib/api';
 
@@ -135,52 +135,6 @@ const RankingsPage: React.FC = () => {
                 <option value={50}>Top 50</option>
                 <option value={100}>Top 100</option>
               </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gray-800 rounded-lg p-6">
-            <div className="flex items-center gap-3">
-              <Trophy className="text-yellow-500 w-6 h-6" />
-              <div>
-                <p className="text-sm text-gray-400">#1 Player</p>
-                <p className="text-lg font-bold">
-                  {rankings?.rankings?.[0]?.name || 'N/A'}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-gray-800 rounded-lg p-6">
-            <div className="flex items-center gap-3">
-              <Target className="text-primary-500 w-6 h-6" />
-              <div>
-                <p className="text-sm text-gray-400">Top Rating</p>
-                <p className="text-lg font-bold">
-                  {rankings?.rankings?.[0] ? Math.round(getRatingValue(rankings.rankings[0])) : 'N/A'}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-gray-800 rounded-lg p-6">
-            <div className="flex items-center gap-3">
-              <BarChart3 className="text-green-500 w-6 h-6" />
-              <div>
-                <p className="text-sm text-gray-400">Active Players</p>
-                <p className="text-lg font-bold">
-                  {rankings?.rankings?.filter((p: Player) => p.is_active).length || 0}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-gray-800 rounded-lg p-6">
-            <div className="flex items-center gap-3">
-              <TrendingUp className="text-blue-500 w-6 h-6" />
-              <div>
-                <p className="text-sm text-gray-400">System</p>
-                <p className="text-lg font-bold">{getSystemLabel()}</p>
-              </div>
             </div>
           </div>
         </div>
