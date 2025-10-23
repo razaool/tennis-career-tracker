@@ -195,15 +195,12 @@ export default function TrajectoryChart({
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6">
-      <div className="mb-6">
+    <div className="bg-gray-800 rounded-lg p-2">
+      <div className="mb-2">
         <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-                <p className="text-sm text-gray-400">
-                  Career progression based on {getSystemLabel()} ratings • {new Date().getFullYear()} season • Interpolated for smooth visualization
-                </p>
       </div>
       
-      <div className="mb-4">
+      <div className="mb-2">
         <ResponsiveContainer width="100%" height={height}>
           <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
