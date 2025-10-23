@@ -201,6 +201,11 @@ export const playerApi = {
   
   titles: (name: string) =>
     axiosInstance.get(`/api/players/${encodeURIComponent(name)}/titles`).then(res => res.data),
+    
+  getCurrentYearStats: (name: string, year: number = 2025) =>
+    axiosInstance.get(`/api/players/${encodeURIComponent(name)}/current-year`, {
+      params: { year }
+    }).then(res => res.data),
 };
 
 export const rankingsApi = {
