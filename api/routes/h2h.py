@@ -3,7 +3,7 @@ Head-to-head endpoints for player rivalries
 """
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
-from ..database import Database
+from database import Database
 
 router = APIRouter()
 

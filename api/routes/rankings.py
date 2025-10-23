@@ -4,8 +4,8 @@ Rankings endpoints
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
 from datetime import date
-from ..database import Database
-from ..config import settings
+from database import Database
+from config import settings
 
 router = APIRouter()
 

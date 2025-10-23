@@ -7,11 +7,11 @@ from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.openapi.docs import get_swagger_ui_html
 import time
 
-from .config import settings
-from .database import Database
+from config import settings
+from database import Database
 
 # Import routes
-from .routes import players, rankings, dashboard, predict, h2h
+from routes import players, rankings, dashboard, predict, h2h
 # from .routes import compare, analysis
 
 

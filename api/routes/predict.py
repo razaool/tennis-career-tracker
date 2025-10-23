@@ -2,7 +2,7 @@
 Match prediction endpoints - MVP version
 """
 from fastapi import APIRouter, HTTPException, Query
-from ..database import Database
+from database import Database
 import math
 
 router = APIRouter()

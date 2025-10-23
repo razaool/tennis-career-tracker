@@ -5,7 +5,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from contextlib import contextmanager
 from typing import Generator
-from .config import settings
+from config import settings
 
 
 class Database:

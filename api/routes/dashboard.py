@@ -3,7 +3,7 @@ Dashboard endpoints - quick summary data for homepage
 """
 from fastapi import APIRouter, HTTPException
 from datetime import date
-from ..database import Database
+from database import Database
 
 router = APIRouter()
 

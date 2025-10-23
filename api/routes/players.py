@@ -3,9 +3,9 @@ Player endpoints - OPTIMIZED VERSION
 """
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
-from ..database import Database
-from ..models.player import PlayerSummary, PlayerDetail
-from ..config import settings
+from database import Database
+from models.player import PlayerSummary, PlayerDetail
+from config import settings
 
 router = APIRouter()
 
@@ -155,6 +155,16 @@ async def get_player(player_name: str):
             FROM player_ratings pr
             JOIN matches m ON pr.match_id = m.match_id
             JOIN player_info pi ON pi.player_id = pr.player_id
+        ),
+        year_2025_stats AS (
+            SELECT 
+                COUNT(*) as total_matches_2025,
+                SUM(CASE WHEN m.winner_id = pi.player_id THEN 1 ELSE 0 END) as wins_2025,
+                SUM(CASE WHEN m.winner_id != pi.player_id THEN 1 ELSE 0 END) as losses_2025
+            FROM player_ratings pr
+            JOIN matches m ON pr.match_id = m.match_id
+            JOIN player_info pi ON pi.player_id = pr.player_id
+            WHERE EXTRACT(YEAR FROM m.date) = 2025
         )
         SELECT 
             p.name,
@@ -179,12 +189,16 @@ async def get_player(player_name: str):
             plr.tournament_success_score,
             wls.total_matches,
             wls.wins,
-            wls.losses
+            wls.losses,
+            y25.total_matches_2025,
+            y25.wins_2025,
+            y25.losses_2025
         FROM players p
         JOIN player_info pi ON true
         LEFT JOIN player_latest_ratings plr ON plr.player_id = pi.player_id
         LEFT JOIN peak_ratings pr ON true
         LEFT JOIN win_loss_stats wls ON true
+        LEFT JOIN year_2025_stats y25 ON true
         WHERE p.player_id = pi.player_id
     """
     
@@ -198,6 +212,11 @@ async def get_player(player_name: str):
         total = player['total_matches'] or 0
         wins = player['wins'] or 0
         win_pct = (wins / total * 100) if total > 0 else 0.0
+        
+        # Calculate 2025 win percentage
+        total_2025 = player['total_matches_2025'] or 0
+        wins_2025 = player['wins_2025'] or 0
+        win_pct_2025 = (wins_2025 / total_2025 * 100) if total_2025 > 0 else 0.0
         
         # Format response
         return {
@@ -226,10 +245,82 @@ async def get_player(player_name: str):
                 "losses": player['losses'],
                 "win_percentage": win_pct
             },
+            "year_2025_stats": {
+                "total_matches": total_2025,
+                "wins": wins_2025,
+                "losses": player['losses_2025'] or 0,
+                "win_percentage": win_pct_2025
+            },
             "current_metrics": {
                 "form_index": round(float(player['form_index']), 1) if player['form_index'] else None,
                 "big_match_rating": round(float(player['big_match_rating']), 2) if player['big_match_rating'] else None,
-                "tournament_success": round(float(player['tournament_success_score']), 1) if player['tournament_success_score'] else None
+                "tournament_success": round(float(player['tournament_success_score']), 1) if player['tournament_success_score'] else None,
+                "tsr_uncertainty": round(float(player['tsr_uncertainty']), 1) if player['tsr_uncertainty'] else None,
+                "glicko_rd": round(float(player['glicko2_rd']), 1) if player['glicko2_rd'] else None
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@router.get("/{player_name}/current-year", response_model=dict)
+async def get_player_current_year_stats(player_name: str, year: int = 2025):
+    """
+    Get player's current year (2025) match statistics
+    
+    - **player_name**: Player name (URL-encoded)
+    - **year**: Year to get stats for (default 2025)
+    """
+    
+    # Decode name
+    player_name = player_name.replace("%20", " ").replace("+", " ")
+    
+    query = """
+        WITH player_info AS (
+            SELECT player_id FROM players WHERE name = %s
+        ),
+        year_stats AS (
+            SELECT 
+                COUNT(*) as total_matches,
+                SUM(CASE WHEN m.winner_id = pi.player_id THEN 1 ELSE 0 END) as wins,
+                SUM(CASE WHEN m.winner_id != pi.player_id THEN 1 ELSE 0 END) as losses
+            FROM player_ratings pr
+            JOIN matches m ON pr.match_id = m.match_id
+            JOIN player_info pi ON pi.player_id = pr.player_id
+            WHERE EXTRACT(YEAR FROM m.date) = %s
+        )
+        SELECT 
+            p.name,
+            ys.total_matches,
+            ys.wins,
+            ys.losses
+        FROM players p
+        JOIN player_info pi ON p.player_id = pi.player_id
+        LEFT JOIN year_stats ys ON true
+    """
+    
+    try:
+        result = Database.execute_one(query, (player_name, year))
+        
+        if not result:
+            raise HTTPException(status_code=404, detail=f"Player '{player_name}' not found")
+        
+        # Calculate win percentage
+        total_matches = result['total_matches'] or 0
+        wins = result['wins'] or 0
+        losses = result['losses'] or 0
+        win_percentage = (wins / total_matches * 100) if total_matches > 0 else 0.0
+        
+        return {
+            "player_name": result['name'],
+            "year": year,
+            "matches": {
+                "total": total_matches,
+                "wins": wins,
+                "losses": losses,
+                "win_percentage": round(win_percentage, 2)
             }
         }
     except HTTPException:
@@ -307,6 +398,70 @@ async def get_player_titles(player_name: str):
             "titles": titles
         }
         
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@router.get("/{player_name}/current-year", response_model=dict)
+async def get_player_current_year_stats(player_name: str, year: int = 2025):
+    """
+    Get player's current year (2025) match statistics
+    
+    - **player_name**: Player name (URL-encoded)
+    - **year**: Year to get stats for (default 2025)
+    """
+    
+    # Decode name
+    player_name = player_name.replace("%20", " ").replace("+", " ")
+    
+    query = """
+        WITH player_info AS (
+            SELECT player_id FROM players WHERE name = %s
+        ),
+        year_stats AS (
+            SELECT 
+                COUNT(*) as total_matches,
+                SUM(CASE WHEN m.winner_id = pi.player_id THEN 1 ELSE 0 END) as wins,
+                SUM(CASE WHEN m.winner_id != pi.player_id THEN 1 ELSE 0 END) as losses
+            FROM player_ratings pr
+            JOIN matches m ON pr.match_id = m.match_id
+            JOIN player_info pi ON pi.player_id = pr.player_id
+            WHERE EXTRACT(YEAR FROM m.date) = %s
+        )
+        SELECT 
+            p.name,
+            ys.total_matches,
+            ys.wins,
+            ys.losses
+        FROM players p
+        JOIN player_info pi ON p.player_id = pi.player_id
+        LEFT JOIN year_stats ys ON true
+    """
+    
+    try:
+        result = Database.execute_one(query, (player_name, year))
+        
+        if not result:
+            raise HTTPException(status_code=404, detail=f"Player '{player_name}' not found")
+        
+        # Calculate win percentage
+        total_matches = result['total_matches'] or 0
+        wins = result['wins'] or 0
+        losses = result['losses'] or 0
+        win_percentage = (wins / total_matches * 100) if total_matches > 0 else 0.0
+        
+        return {
+            "player_name": result['name'],
+            "year": year,
+            "matches": {
+                "total": total_matches,
+                "wins": wins,
+                "losses": losses,
+                "win_percentage": round(win_percentage, 2)
+            }
+        }
     except HTTPException:
         raise
     except Exception as e:
@@ -412,6 +567,70 @@ async def compare_player_trajectories(
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
+@router.get("/{player_name}/current-year", response_model=dict)
+async def get_player_current_year_stats(player_name: str, year: int = 2025):
+    """
+    Get player's current year (2025) match statistics
+    
+    - **player_name**: Player name (URL-encoded)
+    - **year**: Year to get stats for (default 2025)
+    """
+    
+    # Decode name
+    player_name = player_name.replace("%20", " ").replace("+", " ")
+    
+    query = """
+        WITH player_info AS (
+            SELECT player_id FROM players WHERE name = %s
+        ),
+        year_stats AS (
+            SELECT 
+                COUNT(*) as total_matches,
+                SUM(CASE WHEN m.winner_id = pi.player_id THEN 1 ELSE 0 END) as wins,
+                SUM(CASE WHEN m.winner_id != pi.player_id THEN 1 ELSE 0 END) as losses
+            FROM player_ratings pr
+            JOIN matches m ON pr.match_id = m.match_id
+            JOIN player_info pi ON pi.player_id = pr.player_id
+            WHERE EXTRACT(YEAR FROM m.date) = %s
+        )
+        SELECT 
+            p.name,
+            ys.total_matches,
+            ys.wins,
+            ys.losses
+        FROM players p
+        JOIN player_info pi ON p.player_id = pi.player_id
+        LEFT JOIN year_stats ys ON true
+    """
+    
+    try:
+        result = Database.execute_one(query, (player_name, year))
+        
+        if not result:
+            raise HTTPException(status_code=404, detail=f"Player '{player_name}' not found")
+        
+        # Calculate win percentage
+        total_matches = result['total_matches'] or 0
+        wins = result['wins'] or 0
+        losses = result['losses'] or 0
+        win_percentage = (wins / total_matches * 100) if total_matches > 0 else 0.0
+        
+        return {
+            "player_name": result['name'],
+            "year": year,
+            "matches": {
+                "total": total_matches,
+                "wins": wins,
+                "losses": losses,
+                "win_percentage": round(win_percentage, 2)
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
 @router.get("/{player_name}/titles", response_model=dict)
 async def get_player_titles(player_name: str):
     """
@@ -481,6 +700,70 @@ async def get_player_titles(player_name: str):
             "titles": titles
         }
         
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@router.get("/{player_name}/current-year", response_model=dict)
+async def get_player_current_year_stats(player_name: str, year: int = 2025):
+    """
+    Get player's current year (2025) match statistics
+    
+    - **player_name**: Player name (URL-encoded)
+    - **year**: Year to get stats for (default 2025)
+    """
+    
+    # Decode name
+    player_name = player_name.replace("%20", " ").replace("+", " ")
+    
+    query = """
+        WITH player_info AS (
+            SELECT player_id FROM players WHERE name = %s
+        ),
+        year_stats AS (
+            SELECT 
+                COUNT(*) as total_matches,
+                SUM(CASE WHEN m.winner_id = pi.player_id THEN 1 ELSE 0 END) as wins,
+                SUM(CASE WHEN m.winner_id != pi.player_id THEN 1 ELSE 0 END) as losses
+            FROM player_ratings pr
+            JOIN matches m ON pr.match_id = m.match_id
+            JOIN player_info pi ON pi.player_id = pr.player_id
+            WHERE EXTRACT(YEAR FROM m.date) = %s
+        )
+        SELECT 
+            p.name,
+            ys.total_matches,
+            ys.wins,
+            ys.losses
+        FROM players p
+        JOIN player_info pi ON p.player_id = pi.player_id
+        LEFT JOIN year_stats ys ON true
+    """
+    
+    try:
+        result = Database.execute_one(query, (player_name, year))
+        
+        if not result:
+            raise HTTPException(status_code=404, detail=f"Player '{player_name}' not found")
+        
+        # Calculate win percentage
+        total_matches = result['total_matches'] or 0
+        wins = result['wins'] or 0
+        losses = result['losses'] or 0
+        win_percentage = (wins / total_matches * 100) if total_matches > 0 else 0.0
+        
+        return {
+            "player_name": result['name'],
+            "year": year,
+            "matches": {
+                "total": total_matches,
+                "wins": wins,
+                "losses": losses,
+                "win_percentage": round(win_percentage, 2)
+            }
+        }
     except HTTPException:
         raise
     except Exception as e:
@@ -547,6 +830,70 @@ async def get_player_trajectory(
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
+@router.get("/{player_name}/current-year", response_model=dict)
+async def get_player_current_year_stats(player_name: str, year: int = 2025):
+    """
+    Get player's current year (2025) match statistics
+    
+    - **player_name**: Player name (URL-encoded)
+    - **year**: Year to get stats for (default 2025)
+    """
+    
+    # Decode name
+    player_name = player_name.replace("%20", " ").replace("+", " ")
+    
+    query = """
+        WITH player_info AS (
+            SELECT player_id FROM players WHERE name = %s
+        ),
+        year_stats AS (
+            SELECT 
+                COUNT(*) as total_matches,
+                SUM(CASE WHEN m.winner_id = pi.player_id THEN 1 ELSE 0 END) as wins,
+                SUM(CASE WHEN m.winner_id != pi.player_id THEN 1 ELSE 0 END) as losses
+            FROM player_ratings pr
+            JOIN matches m ON pr.match_id = m.match_id
+            JOIN player_info pi ON pi.player_id = pr.player_id
+            WHERE EXTRACT(YEAR FROM m.date) = %s
+        )
+        SELECT 
+            p.name,
+            ys.total_matches,
+            ys.wins,
+            ys.losses
+        FROM players p
+        JOIN player_info pi ON p.player_id = pi.player_id
+        LEFT JOIN year_stats ys ON true
+    """
+    
+    try:
+        result = Database.execute_one(query, (player_name, year))
+        
+        if not result:
+            raise HTTPException(status_code=404, detail=f"Player '{player_name}' not found")
+        
+        # Calculate win percentage
+        total_matches = result['total_matches'] or 0
+        wins = result['wins'] or 0
+        losses = result['losses'] or 0
+        win_percentage = (wins / total_matches * 100) if total_matches > 0 else 0.0
+        
+        return {
+            "player_name": result['name'],
+            "year": year,
+            "matches": {
+                "total": total_matches,
+                "wins": wins,
+                "losses": losses,
+                "win_percentage": round(win_percentage, 2)
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
 @router.get("/{player_name}/titles", response_model=dict)
 async def get_player_titles(player_name: str):
     """
@@ -616,6 +963,70 @@ async def get_player_titles(player_name: str):
             "titles": titles
         }
         
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@router.get("/{player_name}/current-year", response_model=dict)
+async def get_player_current_year_stats(player_name: str, year: int = 2025):
+    """
+    Get player's current year (2025) match statistics
+    
+    - **player_name**: Player name (URL-encoded)
+    - **year**: Year to get stats for (default 2025)
+    """
+    
+    # Decode name
+    player_name = player_name.replace("%20", " ").replace("+", " ")
+    
+    query = """
+        WITH player_info AS (
+            SELECT player_id FROM players WHERE name = %s
+        ),
+        year_stats AS (
+            SELECT 
+                COUNT(*) as total_matches,
+                SUM(CASE WHEN m.winner_id = pi.player_id THEN 1 ELSE 0 END) as wins,
+                SUM(CASE WHEN m.winner_id != pi.player_id THEN 1 ELSE 0 END) as losses
+            FROM player_ratings pr
+            JOIN matches m ON pr.match_id = m.match_id
+            JOIN player_info pi ON pi.player_id = pr.player_id
+            WHERE EXTRACT(YEAR FROM m.date) = %s
+        )
+        SELECT 
+            p.name,
+            ys.total_matches,
+            ys.wins,
+            ys.losses
+        FROM players p
+        JOIN player_info pi ON p.player_id = pi.player_id
+        LEFT JOIN year_stats ys ON true
+    """
+    
+    try:
+        result = Database.execute_one(query, (player_name, year))
+        
+        if not result:
+            raise HTTPException(status_code=404, detail=f"Player '{player_name}' not found")
+        
+        # Calculate win percentage
+        total_matches = result['total_matches'] or 0
+        wins = result['wins'] or 0
+        losses = result['losses'] or 0
+        win_percentage = (wins / total_matches * 100) if total_matches > 0 else 0.0
+        
+        return {
+            "player_name": result['name'],
+            "year": year,
+            "matches": {
+                "total": total_matches,
+                "wins": wins,
+                "losses": losses,
+                "win_percentage": round(win_percentage, 2)
+            }
+        }
     except HTTPException:
         raise
     except Exception as e:
@@ -703,6 +1114,70 @@ async def get_recent_matches(
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
+@router.get("/{player_name}/current-year", response_model=dict)
+async def get_player_current_year_stats(player_name: str, year: int = 2025):
+    """
+    Get player's current year (2025) match statistics
+    
+    - **player_name**: Player name (URL-encoded)
+    - **year**: Year to get stats for (default 2025)
+    """
+    
+    # Decode name
+    player_name = player_name.replace("%20", " ").replace("+", " ")
+    
+    query = """
+        WITH player_info AS (
+            SELECT player_id FROM players WHERE name = %s
+        ),
+        year_stats AS (
+            SELECT 
+                COUNT(*) as total_matches,
+                SUM(CASE WHEN m.winner_id = pi.player_id THEN 1 ELSE 0 END) as wins,
+                SUM(CASE WHEN m.winner_id != pi.player_id THEN 1 ELSE 0 END) as losses
+            FROM player_ratings pr
+            JOIN matches m ON pr.match_id = m.match_id
+            JOIN player_info pi ON pi.player_id = pr.player_id
+            WHERE EXTRACT(YEAR FROM m.date) = %s
+        )
+        SELECT 
+            p.name,
+            ys.total_matches,
+            ys.wins,
+            ys.losses
+        FROM players p
+        JOIN player_info pi ON p.player_id = pi.player_id
+        LEFT JOIN year_stats ys ON true
+    """
+    
+    try:
+        result = Database.execute_one(query, (player_name, year))
+        
+        if not result:
+            raise HTTPException(status_code=404, detail=f"Player '{player_name}' not found")
+        
+        # Calculate win percentage
+        total_matches = result['total_matches'] or 0
+        wins = result['wins'] or 0
+        losses = result['losses'] or 0
+        win_percentage = (wins / total_matches * 100) if total_matches > 0 else 0.0
+        
+        return {
+            "player_name": result['name'],
+            "year": year,
+            "matches": {
+                "total": total_matches,
+                "wins": wins,
+                "losses": losses,
+                "win_percentage": round(win_percentage, 2)
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
 @router.get("/{player_name}/titles", response_model=dict)
 async def get_player_titles(player_name: str):
     """
@@ -772,6 +1247,70 @@ async def get_player_titles(player_name: str):
             "titles": titles
         }
         
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@router.get("/{player_name}/current-year", response_model=dict)
+async def get_player_current_year_stats(player_name: str, year: int = 2025):
+    """
+    Get player's current year (2025) match statistics
+    
+    - **player_name**: Player name (URL-encoded)
+    - **year**: Year to get stats for (default 2025)
+    """
+    
+    # Decode name
+    player_name = player_name.replace("%20", " ").replace("+", " ")
+    
+    query = """
+        WITH player_info AS (
+            SELECT player_id FROM players WHERE name = %s
+        ),
+        year_stats AS (
+            SELECT 
+                COUNT(*) as total_matches,
+                SUM(CASE WHEN m.winner_id = pi.player_id THEN 1 ELSE 0 END) as wins,
+                SUM(CASE WHEN m.winner_id != pi.player_id THEN 1 ELSE 0 END) as losses
+            FROM player_ratings pr
+            JOIN matches m ON pr.match_id = m.match_id
+            JOIN player_info pi ON pi.player_id = pr.player_id
+            WHERE EXTRACT(YEAR FROM m.date) = %s
+        )
+        SELECT 
+            p.name,
+            ys.total_matches,
+            ys.wins,
+            ys.losses
+        FROM players p
+        JOIN player_info pi ON p.player_id = pi.player_id
+        LEFT JOIN year_stats ys ON true
+    """
+    
+    try:
+        result = Database.execute_one(query, (player_name, year))
+        
+        if not result:
+            raise HTTPException(status_code=404, detail=f"Player '{player_name}' not found")
+        
+        # Calculate win percentage
+        total_matches = result['total_matches'] or 0
+        wins = result['wins'] or 0
+        losses = result['losses'] or 0
+        win_percentage = (wins / total_matches * 100) if total_matches > 0 else 0.0
+        
+        return {
+            "player_name": result['name'],
+            "year": year,
+            "matches": {
+                "total": total_matches,
+                "wins": wins,
+                "losses": losses,
+                "win_percentage": round(win_percentage, 2)
+            }
+        }
     except HTTPException:
         raise
     except Exception as e:
