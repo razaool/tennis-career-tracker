@@ -21,25 +21,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <div className="min-h-screen bg-gray-900 text-gray-100">
-          {/* Navigation */}
-          <nav className="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
-            <div className="container mx-auto px-4">
-              <div className="flex items-center justify-between h-16">
-                <Link to="/" className="flex items-center space-x-2">
-                  <Trophy className="w-8 h-8 text-tennis-green" />
-                  <span className="text-xl font-bold">Tennis Career Tracker</span>
-                </Link>
-                
-                <div className="flex space-x-1">
-                  <NavLink to="/" icon={<Home size={18} />} label="Home" />
-                  <NavLink to="/rankings" icon={<TrendingUp size={18} />} label="Rankings" />
-                  <NavLink to="/players" icon={<Users size={18} />} label="Players" />
-                  <NavLink to="/predict" icon={<Swords size={18} />} label="Predict" />
-                </div>
-              </div>
-            </div>
-          </nav>
-
           {/* Main Content */}
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -64,13 +45,6 @@ function App() {
               </main>
             } />
           </Routes>
-
-          {/* Footer */}
-          <footer className="bg-gray-800 border-t border-gray-700 mt-16">
-            <div className="container mx-auto px-4 py-6 text-center text-gray-400 text-sm">
-              <p>Tennis Career Tracker • 1968-2025 • 740K+ Matches</p>
-            </div>
-          </footer>
         </div>
       </Router>
     </QueryClientProvider>
